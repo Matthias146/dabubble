@@ -12,12 +12,12 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideFirebaseApp(() =>
       initializeApp({
-        apiKey: 'AIzaSyBwJPfmT6PTkBT7Fluis_wfLDUbt7Y8mDY',
-        authDomain: 'dabubble-ea8ed.firebaseapp.com',
-        projectId: 'dabubble-ea8ed',
-        storageBucket: 'dabubble-ea8ed.firebasestorage.app',
-        messagingSenderId: '316136888446',
-        appId: '1:316136888446:web:5a1f9c3171adb23706202f',
+        apiKey: 'AIzaSyClzhAFdytdihNb8kRl9LMYBeKK5DkNAmM',
+        authDomain: 'dabubble-fbfe2.firebaseapp.com',
+        projectId: 'dabubble-fbfe2',
+        storageBucket: 'abubble-fbfe2.firebasestorage.app',
+        messagingSenderId: '866605276491',
+        appId: '1:866605276491:web:c767f1877083ab7c175cce"',
       })
     ),
     provideAuth(() => getAuth()),

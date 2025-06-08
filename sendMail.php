@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $userId = $_POST['userId']; // Benutzer-ID oder generierter Token
 
     // Setze den richtigen Server-Link für das Passwort-Reset
-    $resetLink = "https://dabubble-364.developerakademie.net/reset?userId=" . urlencode($userId);
+    $resetLink = "https://dabubble.de/reset?userId=" . urlencode($userId);
 
     $subject = "Passwort zurücksetzen";
     $message = "Hallo,\n\nKlicke auf den folgenden Link, um dein Passwort zurückzusetzen:\n\n" . $resetLink;
