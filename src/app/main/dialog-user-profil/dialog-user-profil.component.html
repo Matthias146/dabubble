@@ -1,0 +1,73 @@
+<div class="dialog-user-profil" [ngClass]="{'edit-profil': isEditable}">
+    <div class="profil-header" *ngIf="!isEditMode">
+        Profil <img src="./assets/icons/close.svg" alt="" class="closebtn" (click)="dialogRef.close()">
+    </div>
+    <div class="profil-header" *ngIf="isEditMode">
+        Dein Profil bearbeiten <img src="./assets/icons/close.svg" alt="" class="closebtn" (click)="dialogRef.close()">
+    </div>
+
+    <img [src]="getAvatarForUser(this.editedUser)" alt="" class="profilImg">
+
+    <div *ngIf="isEditMode" class="avatars">
+        @for (avatar of avatars; track avatar) {
+            <img [src]="avatar" (click)="selectAvatar(avatar)" alt="Avatar">
+        }
+    </div>
+
+    <div style="display: flex;align-items: center;justify-content: space-between;width: 100%;" *ngIf="!isEditMode">
+        <div class="user-name">{{ data.user.name }}</div> 
+        <!-- Conditionally show the "bearbeiten" button if the profile is editable -->
+        <button *ngIf="isEditable" (click)="toggleEditMode()" style="border: unset; color: rgba(83, 90, 241, 1); cursor: pointer;">Bearbeiten</button>
+    </div>
+
+    <div class="user-info" *ngIf="!isEditMode">
+        <div class="d-flex">
+            <div [ngClass]="{'offline-point': !data.user.online}" class="online-point"></div>
+            <span>{{ data.user.online ? 'Aktiv' : 'Abwesend' }}</span>
+        </div>
+        <div class="email">
+            <img src="./assets/icons/mail.png" alt=""> <span>E-Mail-Adresse</span>
+        </div>
+        <span style="color: #1381FF; font-size: 18px; padding-left: 35px;">{{ data.user.mail }}</span>
+    </div>
+
+    <button class="nachrichtBtn" (click)="chatService.openDirectMessage(currentUserId, data.user.userId); chatService.onChatSelected(); dialogRef.close();" *ngIf="!isEditMode">
+        <img src="./assets/icons/mode_comment.png" alt=""> Nachricht
+    </button>
+
+    <!-- Form for Editing -->
+    <form #profileForm="ngForm" (ngSubmit)="saveProfile(profileForm)" *ngIf="isEditMode" style="display: flex;flex-direction: column;gap:24px;width: 100%;">
+        <!-- Name Field with Validation -->
+        <label style="font-size: 18px;display: flex;align-items: center;gap:8px"><img src="./assets/icons/account_circle.png" alt="" style="width: 20px;height: 20px;"> Vollständiger Name</label>
+        <input type="text" name="name" [formControl]="name" required minlength="3" style="padding: 0px 0px 0px 20px;
+        margin: -15px -10px 0px -10px;width: 100%;height: 52px;border-radius: 30px;border: 1px solid rgba(173, 176, 217, 1);"/>
+        <div *ngIf="name.invalid && (name.dirty || name.touched)" class="error">
+            <div *ngIf="name.errors?.['required']">Name is required.</div>
+            <div *ngIf="name.errors?.['minlength']">Name must be at least 3 characters long.</div>
+        </div>
+
+        <!-- Email Field with Validation -->
+        <label style="font-size: 18px;display: flex;align-items: center;gap:8px"><img src="./assets/icons/mail.png" alt="" style="width: 20px;height: 20px;object-fit: contain;"> E-Mail-Adresse</label>
+        <input type="email" name="email" [formControl]="email" required email (blur)="checkEmailBlur()"
+        style="padding: 0px 0px 0px 20px; margin: -15px -10px 0px -10px;width: 100%;height: 52px;border-radius: 30px;border: 1px solid rgba(173, 176, 217, 1);"/>
+        <div *ngIf="email.invalid && (email.dirty || email.touched)" class="error">
+            <div *ngIf="email.errors?.['required']">Email is required.</div>
+            <div *ngIf="email.errors?.['email']">Please enter a valid email address.</div>
+        </div>
+
+        <!-- Password Field for Re-Authentication -->
+    <label style="font-size: 16px;display: flex;align-items: center;gap:8px"> Bitte gebe dein Passwort ein, um Änderungen zu bestätigen.</label>
+    <input type="password" name="password" [(ngModel)]="currentPassword" required minlength="6" #password="ngModel" [placeholder]="passwordPlaceholder"
+           style="padding: 0px 0px 0px 20px; margin: -15px -10px 0px -10px;width: 100%;height: 52px;border-radius: 30px;border: 1px solid rgba(173, 176, 217, 1);"/>
+    <!-- <div *ngIf="password.invalid && (password.dirty || password.touched)" class="error">
+        <div *ngIf="password.errors?.['required']">Passwort ist erforderlich.</div>
+        <div *ngIf="password.errors?.['minlength']">Das Passwort muss mindestens 6 Zeichen lang sein.</div>
+    </div> -->
+
+        <!-- Action Buttons -->
+        <div class="button-group">
+            <button type="button" (click)="toggleEditMode()" class="cancelBtn">Abbrechen</button>
+            <button type="submit" [disabled]="profileForm.invalid" [ngClass]="{'enabled': !profileForm.invalid}"  class="saveBtn">Speichern</button>
+        </div>
+    </form>
+</div>

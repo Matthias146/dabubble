@@ -1,0 +1,31 @@
+<section>
+  <div class="login-container" *ngIf="!showLoading">
+    @if (!signUp && !password) {
+    <app-signin
+      [signUp]="signUp"
+      (signUpChange)="onSignUpChange($event)"
+      (passwordChange)="onPasswordChange($event)"
+    ></app-signin>
+    } @if (!signUp && password) {
+    <app-password-main
+      (switchToSignin)="handleSwitchToSignin()"
+    ></app-password-main>
+    } @if (signUp) {
+    <app-signup (switchToSignin)="handleSwitchToSignin()"></app-signup>
+    }
+  </div>
+
+  <div class="login-footer" *ngIf="!showLoading">
+    <a routerLink="/imprint">Impressum</a>
+    <a routerLink="/privacy-policy">Datenschutz</a>
+  </div>
+
+  <div class="loading-container" *ngIf="showLoading">
+    <div class="logo-container">
+      <div class="logo animated-logo">
+        <img src="./assets/icons/Logo.svg" alt="Logo" />
+        <p>DaBubble</p>
+      </div>
+    </div>
+  </div>
+</section>

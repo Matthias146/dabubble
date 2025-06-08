@@ -1,0 +1,65 @@
+<div class="login-header">
+    <div class="logo">
+        <img src="./assets/icons/Logo.svg" alt="">
+        <p>DABubble</p>
+    </div>
+    <div class="gotoregister">
+        <p>Neu bei DABubble?</p>
+        <a (click)="goToSignUp()">Konto erstellen</a>
+    </div>
+</div>
+<div class="login-content">
+    <h1>Anmeldung</h1>
+    <p>Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>
+
+    <form #ngForm="ngForm" (ngSubmit)="onSubmit(contactForm)" #contactForm="ngForm">
+         
+        <div class="input">
+            <img [ngStyle]="{'width': '20px'}" src="./assets/icons/login-mail.svg" alt="">
+            <input 
+            name="mailInput" 
+            [(ngModel)]="user.mail" 
+            #mailInput 
+            required 
+            placeholder="beispielname@email.com" 
+            [placeholder]="authError ? 'E-Mail oder Passwort inkorrekt' : (emailError ? 'Bitte korrekte E-Mail-Adresse eingeben!' : 'beispielname@email.com')" 
+            pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
+            [ngClass]="{'placeholder-error': authError || emailError}" 
+            (blur)="checkEmail()" />
+        </div>
+
+        <div class="input">
+            <img [ngStyle]="{'width': '16px'}" src="./assets/icons/login-lock.svg" alt="">
+            <input 
+            name="passwordInput" 
+            [(ngModel)]="user.password" 
+            required 
+            placeholder="Passwort (min. 6 Zeichen)" 
+            [placeholder]="authError ? 'E-Mail oder Passwort inkorrekt' : (passwordError ? 'Mindestens 6 Zeichen' : 'Passwort (min. 6 Zeichen)')" 
+            [ngClass]="{'placeholder-error': authError || passwordError}" 
+            type="password"
+            (blur)="checkPw()" />
+        </div>
+
+        <a (click)="goToPasswordReset()">Passwort vergessen?</a>
+        <div class="divider">
+            <div class="line"></div>
+            <p>ODER</p>
+            <div class="line"></div>
+        </div>
+
+        <div class="submit-area">
+
+            <button class="google-button" type="button" (click)="googleLogin()">
+                <img src="./assets/icons/Google.svg" alt="">
+                <p>Anmelden mit Google</p>
+            </button> 
+
+            <div class="login-buttons">
+                <button class="login-button" type="submit">Anmelden</button>
+                <button class="login-button guest" type="button" (click)="guestLogin()">Gäste-Login</button>
+            </div>
+        </div>
+
+    </form>
+</div>

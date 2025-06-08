@@ -1,0 +1,389 @@
+.channel-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 0 30px 30px 30px;
+    width: 80%;
+    max-width: 872px;
+    max-height: 616px;
+    background-color: white;
+    margin: 0;
+    padding: 20px;
+    box-shadow: 0px 6px 10px 0px #00000033;
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: scroll;
+    scrollbar-width: none;
+
+    .channel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 24px;
+        font-weight: 700;
+        width: auto;
+        height: 40px;
+        font-size: 18px;
+        font-weight: 700;
+
+        img {
+            width: 40px;
+            height: 40px;
+            padding: 8px;
+            border-radius: 30px;
+        }
+
+        p {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .closebtn {
+            &:hover {
+                background: rgba(236, 238, 254, 1);
+                cursor: pointer;
+            }
+        }
+    }
+
+    .channel-name {
+        padding: 20px;
+        min-height: 114px;
+        padding: 20px;
+        border-radius: 20px;
+        border: 1px solid rgba(173, 176, 217, 1);
+        font-size: 18px;
+        font-weight: 700;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        &.editing {
+            border: unset;
+            padding: 0;
+        }
+
+        p {
+            font-size: 18px;
+            font-weight: 400;
+            margin: 0;
+        }
+    }
+
+    .d-flex {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .userName {
+        color: rgba(83, 90, 241, 1);
+        font-size: 24px;
+        font-weight: 400;
+    }
+
+    .separate-line {
+        width: 100%;
+        max-width: 739px;
+        height: 0px;
+        border: 1px solid rgba(173, 176, 217, 1);
+    }
+
+    .close-channel {
+        width: 204px;
+        height: 49px;
+        border-radius: 25px;
+        background-color: rgba(68, 77, 242, 1);
+        color: rgba(255, 255, 255, 1);
+        font-size: 18px;
+        font-weight: 700;
+        align-self: flex-end;
+        border: unset;
+        padding: 12px;
+
+        &:hover {
+            background-color: rgba(68, 77, 242, 0.7);
+            cursor: pointer;
+        }
+    }
+
+    .delete-btn {
+        background-color: rgb(255, 0, 0);
+
+        &:hover {
+            background-color: rgba(255, 0, 0, 0.5);
+            cursor: pointer;
+        }
+    }
+}
+
+.edit-input {
+    width: 100%;
+    height: 45px;
+    border-radius: 30px;
+    padding: 15px 20px;
+    border: 1px solid rgba(173, 176, 217, 1);
+    box-sizing: border-box;
+    font-family: Nunito;
+    font-size: 18px;
+    font-weight: 400;
+
+}
+
+.editBtn {
+    border: none;
+    background-color: transparent;
+    font-size: 18px;
+    font-weight: 600;
+
+    &:hover {
+        cursor: pointer;
+        color: rgba(83, 90, 241, 1);
+    }
+
+    &.a-self {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .d-none {
+        display: none;
+    }
+
+    .btn-icon img {
+        width: 24px;
+        height: 24px;
+        border-radius: 30px;
+        padding: 6px;
+        background: rgba(236, 238, 254, 1);
+        transition: transform 0.3s ease;
+
+        &:hover {
+            cursor: pointer;
+            transform: scale(1.1);
+        }
+    }
+
+    .btn-text {
+        font-size: 18px;
+        font-weight: 600;
+    }
+}
+
+.channel-description {
+    padding: 20px;
+    height: auto;
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(173, 176, 217, 1);
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+
+    .edit-description {
+        font-family: Nunito;
+        font-size: 18px;
+        font-weight: 400;
+    }
+
+    &.editing {
+        border: unset;
+        padding: 0;
+    }
+}
+
+.edit-textarea {
+    padding: 20px;
+    min-height: 114px;
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(173, 176, 217, 1);
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+    font-family: Nunito;
+    font-size: 18px;
+    font-weight: 400;
+}
+
+.members {
+    border-radius: 20px;
+    border: 1px solid rgba(173, 176, 217, 1);
+    height: auto;
+    width: auto;
+    padding: 12px 0;
+}
+
+.members-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 700;
+    font-size: 18px;
+    padding: 20px;
+
+    img {
+        border-radius: 20px;
+        width: 30px;
+        height: 30px;
+
+        &:hover {
+            background: rgba(236, 238, 254, 1);
+            content: url('./../../../../assets/icons/close-1.png');
+            cursor: pointer;
+        }
+    }
+}
+
+.usersList {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 0 10px;
+    width: fit-content;
+
+    &:hover {
+        background: rgba(236, 238, 254, 1);
+        border-radius: 30px;
+        color: rgba(83, 90, 241, 1);
+        cursor: pointer;
+    }
+}
+
+.users-menu {
+    gap: 16px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 120px;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    padding-inline-start: 0;
+}
+
+.add-users {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 400;
+    justify-content: center;
+    gap: 10px;
+    border-radius: 20px;
+    margin: 0 12px;
+    padding: 20px;
+    border-radius: 40px;
+
+    img {
+        cursor: pointer;
+    }
+
+    &:hover {
+        background: rgba(236, 238, 254, 1);
+        color: rgba(83, 90, 241, 1);
+
+        img {
+            content: url('./../../../../assets/icons/person_add_hover.png');
+        }
+    }
+}
+
+.edit-textarea {
+    width: auto;
+    padding: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+    border-radius: 20px;
+    border: 1px solid rgb(173, 176, 217);
+    resize: vertical;
+
+    &::placeholder {
+        text-align: left;
+        vertical-align: top;
+    }
+}
+
+.isMobile {
+    margin: 20px;
+}
+
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+    font-weight: bold;
+}
+.online-point{
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    top: 16px;
+    right: 16px;
+    border: 2px solid #FFFFFF;
+    background-color: #92C83E;
+    z-index: 11;
+    position: relative;
+}
+.offline-point{
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    top: 16px;
+    right: 16px;
+    border: 2px solid #FFFFFF;
+    background-color: rgba(104, 104, 104, 1);
+    z-index: 11;
+    position: relative;
+}
+
+@media (max-width: 768px) {
+    .channel-container {
+        width: 100%;
+        height: 100%;
+        max-height: -webkit-fill-available;
+        gap: 0;
+        padding: 0;
+        border-radius: 0;
+    }
+
+    .channel-container .channel-header p {
+        font-size: 18px;
+    }
+
+    .channel-container .channel-header img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .channel-container .channel-name {
+        font-size: 14px;
+        padding: 16px;
+    }
+
+    .editBtn {
+        font-size: 14px;
+    }
+
+    .channel-description {
+        font-size: 14px;
+    }
+
+    .channel-container .userName {
+        font-size: 18px;
+    }
+
+    .channel-container .close-channel {
+        font-size: 14px;
+    }
+}

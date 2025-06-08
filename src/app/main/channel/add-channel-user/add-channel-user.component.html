@@ -1,0 +1,13 @@
+<div class="channel-users">
+    <div class="members-header">Mitglieder<img src="./assets/icons/close.png" (click)="dialogRef.close()"></div>
+    <ul class="users-menu">
+        <li *ngFor="let member of channel.members" class="usersList" (click)="userService.openUserProfil(member); dialogRef.close()">
+            <img [src]="userService.getAvatarForUser(member.name)" alt=""
+                style="width: 50px; height: 50px; border-radius: 30px;">
+            <div [ngClass]="{'offline-point': !member.online}" class="online-point"></div>
+            {{ member.name }}
+
+        </li>
+    </ul>
+    <div class="add-users" (click)="openDialogAddUser()"><img src="./assets/icons/person_add.png" alt=""> Mitglieder hinzufügen</div>
+</div>

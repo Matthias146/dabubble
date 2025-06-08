@@ -1,0 +1,81 @@
+<div class="channel-container">
+    <div [ngClass]="sharedService.isMobile ? 'isMobile channel-header' : 'channel-header'">
+        <div class="d-flex"><img src="./assets/icons/tag.png" alt="">
+            <p>{{channel.channelName}}</p>
+        </div>
+        <img src="./assets/icons/close.png" alt="" (click)="dialogRef.close()" class="closebtn">
+    </div>
+    <div class="channel-name" [ngClass]="{ 'editing': isEditing, 'isMobile': sharedService.isMobile}">
+        <div class="d-flex">
+            <div *ngIf="!isEditing">{{ channel.channelName }}</div>
+            <button class="editBtn" (click)="isEditing ? editChannelName() : toggleInputName()"
+                [ngClass]="{ 'a-self': isEditing }">
+                <span *ngIf="!sharedService.isMobile" class="btn-text">
+                    {{ isEditing ? 'Speichern' : 'Bearbeiten' }}
+                </span>
+                <span *ngIf="sharedService.isMobile" class="btn-icon" (mouseenter)="isHovered = true"
+                    (mouseleave)="isHovered = false">
+                    <img [src]="isEditing ? (isHovered ? './assets/icons/check_circle-1.png' : './assets/icons/check_circle.png')
+                     : (isHovered ? './assets/icons/edit-1.png' : './assets/icons/edit.png')"
+                        [alt]="isEditing ? 'Speichern-Icon' : 'Bearbeiten-Icon'">
+                </span>
+            </button>
+        </div>
+        <input *ngIf="isEditing" class="edit-input" type="text" [(ngModel)]="newChannelName" />
+        <div *ngIf="errorMessage" class="error-message">
+            {{ errorMessage }}
+          </div>
+        <div *ngIf="!isEditing" style="display: flex; align-items: center;">
+            <img src="./assets/icons/tag.png" alt="">
+            <p>{{ channel.channelName }}</p>
+        </div>
+    </div>
+    <div class="channel-description"
+        [ngClass]="{ 'editing': isEditingDescription , 'isMobile' : sharedService.isMobile}">
+        <div class="d-flex">
+            <div>Beschreibung</div>
+            <button class="editBtn" (click)="isEditingDescription ? saveChannelDescription() : toggleDescriptionEdit()">
+                <span *ngIf="!sharedService.isMobile" class="btn-text">
+                    {{ isEditingDescription ? 'Speichern' : 'Bearbeiten' }}
+                </span>
+                <span *ngIf="sharedService.isMobile" class="btn-icon" 
+                    (mouseenter)="isHoveredDescription = true"
+                    (mouseleave)="isHoveredDescription = false">
+                    <img [src]="getIconSrc()" [alt]="isEditingDescription ? 'Speichern-Icon' : 'Bearbeiten-Icon'">
+                </span>
+            </button>
+        </div>
+        <textarea *ngIf="isEditingDescription" class="edit-textarea" placeholder="Beschreibung eingeben"
+            [(ngModel)]="newChannelDescription" (keydown.enter)="saveChannelDescription()">
+        </textarea>
+        <p *ngIf="!isEditingDescription" class="edit-description"> {{ channel.channelDescription }} </p>
+        <hr class="separate-line">
+        <div style="display: flex;flex-direction: column;gap: 18px;">Erstellt von
+            <div class="userName">{{channel.creatorName}}</div>
+        </div>
+    </div>
+
+    <div *ngIf="this.sharedService.isMobile" [ngClass]="sharedService.isMobile ? 'members isMobile' : 'members'">
+        <div class="members-header">Mitglieder</div>
+        <ul class="users-menu">
+            <li *ngFor="let member of channel.members" class="usersList"
+                (click)="userService.openUserProfil(member);">
+                <img [src]="userService.getAvatarForUser(member.name)" alt=""
+                    style="width: 50px; height: 50px; border-radius: 30px;">
+                <div [ngClass]="{'offline-point': !member.online}" class="online-point"></div>
+                {{ member.name }}
+            </li>
+        </ul>
+        <div class="add-users" (click)="openDialogAddUser()">
+            <img src="./assets/icons/person_add.png" alt=""> Mitglieder hinzufügen
+        </div>
+    </div>
+    <div style="display: flex;gap: 8px;align-items: center;justify-content: flex-end;">
+        <button [ngClass]="sharedService.isMobile ? 'isMobile close-channel' : 'close-channel'"
+            (click)="leaveChannel(channel.id)">Channel verlassen
+        </button>
+        <button (click)="deleteChannel(channel.id)" *ngIf="channel.creatorName === this.currentUser"
+            [ngClass]="sharedService.isMobile ? 'isMobile close-channel delete-btn' : 'close-channel delete-btn'">Channel löschen
+        </button>
+    </div>
+</div>

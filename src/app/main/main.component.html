@@ -1,0 +1,32 @@
+<body>
+  <app-header></app-header>
+  <div class="d-flex">
+
+    <app-menu *ngIf="this.chatService.showMenu" [ngClass]="this.sharedService.isMobile ? 'mobile-menu' : ''"
+      (channelSelected)="this.chatService.onChannelSelected($event)"
+      (chatSelected)="this.chatService.onChatSelected()">
+    </app-menu>
+
+    <app-channel class="app-channel-container" *ngIf="this.chatService.showChannel" [selectedChannelId]="this.chatService.selectedChannelId"
+      (chatSelected)="this.chatService.onChatSelected()" [ngClass]="this.sharedService.isMobile ? 'mobile-channel' : 'desk-channel'">
+    </app-channel>
+
+    <app-chat *ngIf="this.chatService.showChat" class="chat-container">
+    </app-chat>
+
+  </div>
+
+  <div class="success-dialog" *ngIf="showSuccessDialog">
+    <div class="success-inner-dialog">
+      <p>
+        <span style="font-size: 50px;">Du hast Post!</span><br>
+        Bitte klicke auf den Link in der E-Mail und verifiziere deine neue E-Mail-Adresse sowie eventuelle weitere Änderungen in deinem Profil.
+      </p>
+      <img (click)="toggleSuccessDialog(false)" src="./assets/icons/close-white.svg" alt="">
+    </div>
+  </div>
+
+</body>
+
+
+

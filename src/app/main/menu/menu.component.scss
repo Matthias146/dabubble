@@ -1,0 +1,355 @@
+html {
+    overflow: scroll;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+    /* make scrollbar transparent */
+}
+
+.menu-container {
+    //height: 940px;
+    height: 88vh;
+    background-color: #FFFFFF;
+    border-radius: 30px;
+    padding: 32px 30px 32px 30px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    margin-left: 16px;
+    overflow-y: auto;
+}
+
+.mobile-menu-container {
+    height: 84vh;
+    padding-bottom: 40px;
+    margin: 0;
+    border: unset;
+    border-radius: unset;
+}
+
+.flex-align-center {
+    display: flex;
+    align-items: center;
+}
+
+.gap-15 {
+    gap: 15px;
+}
+
+.gap-25 {
+    gap: 25px;
+}
+
+.new-message-button {
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: unset;
+    background-color: unset;
+    border-radius: 30px;
+
+    &:hover {
+        cursor: pointer;
+        background-color: #ECEEFE;
+    }
+}
+
+.plus-button {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: unset;
+    background-color: unset;
+    border-radius: 30px;
+
+    &:hover {
+        cursor: pointer;
+        background-color: #ECEEFE;
+    }
+}
+
+.padding-5-10-5-0 {
+    padding: 5px 10px 5px 0px;
+}
+
+;
+
+.menu-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.channel-container {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.dm-container {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.dm-container-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.channel-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+.dm-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.channel-header {
+    display: flex;
+    padding: 5px 10px 5px 0px;
+    gap: 15px;
+
+    &:hover {
+        cursor: pointer;
+        color: #535AF1;
+    }
+}
+
+.dm-header {
+    display: flex;
+    padding: 5px 10px 5px 0px;
+    gap: 15px;
+
+    &:hover {
+        cursor: pointer;
+        color: #535AF1;
+    }
+}
+
+.logo-cat-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.workspace-logo {
+    width: 60px;
+    height: 60px;
+}
+
+.added-channels {
+    display: flex;
+    flex-direction: column;
+    padding-left: 25px;
+    gap: 13px;
+}
+
+.add-channel {
+    display: flex;
+    flex-direction: column;
+    padding-left: 25px;
+    gap: 13px;
+}
+
+.channel-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 20px;
+    border-radius: 30px;
+
+    &:hover {
+        cursor: pointer;
+        background-color: #ECEEFE;
+        color: #535AF1;
+    }
+}
+
+.add-channel-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 20px;
+    border-radius: 30px;
+
+    &:hover {
+        cursor: pointer;
+        color: #535AF1;
+    }
+}
+
+.user-container {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    padding-left: 25px;
+}
+
+.user {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 4px 20px;
+    position: relative;
+    border-radius: 30px;
+
+    &:hover {
+        cursor: pointer;
+        background-color: #ECEEFE;
+    }
+}
+
+.user-avatar {
+    height: 50px;
+    width: 50px;
+    border-radius: 30px;
+    z-index: 10;
+    position: absolute;
+}
+
+.avatar-container {
+    height: 50px;
+    width: 50px;
+}
+
+.message-count {
+    position: absolute;
+    top: 0;
+    left: 56px;
+    z-index: 11;
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    color: white;
+    background-color: red;
+    border: 2px solid #FFFFFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+}
+
+.online-point {
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    top: 40px;
+    left: 56px;
+    border: 2px solid #FFFFFF;
+    background-color: #92C83E;
+    z-index: 11;
+    position: absolute;
+}
+
+.offline-point {
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    top: 40px;
+    left: 56px;
+    border: 2px solid #FFFFFF;
+    background-color: rgba(104, 104, 104, 1);
+    z-index: 11;
+    position: absolute;
+}
+
+.open-menu{
+    animation: open forwards ease-in 100ms;
+}
+
+@keyframes open {
+    0%{transform: translateX(-110%);}
+    100%{transform: translateX(0%);}
+}
+
+.close-menu{
+    animation: close forwards ease-in 100ms;
+}
+
+@keyframes close {
+    0%{transform: translateX(0%);}
+    100%{transform: translateX(-110%);}
+}
+
+.rotateArrow {
+    transform: rotate(-90deg);
+    transition: filter 0.3s ease, transform 0.3s ease;
+    &:hover {
+        filter: brightness(0) saturate(100%) invert(45%) sepia(72%) saturate(5802%) hue-rotate(228deg) brightness(95%) contrast(99%);
+        cursor: pointer;
+        
+    }
+}
+
+.rotate-text {
+    vertical-align: bottom;
+}
+
+.menu-toggle-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-evenly;
+    position: fixed;
+    top: 754.5px;
+    width: 306px;
+    height: 60px;
+    z-index: 999;
+    transform: rotate(-90deg);
+    transform-origin: 0 0;
+    border: unset;
+    border-radius: 0px 0px 30px 30px;
+    background-color: #FFFFFF;
+    box-shadow: 0px 4px 7px 4px rgba(0, 0, 0, 0.2);
+    transition: filter 0.3s ease;
+
+    img{
+        transform: rotate(90deg);
+    }
+
+    &:hover {
+        cursor: pointer;
+
+        .rotate-text, img {
+            transition: filter 0.3s ease;
+            filter: brightness(0) saturate(100%) invert(45%) sepia(72%) saturate(5802%) hue-rotate(228deg) brightness(95%) contrast(99%);
+            cursor: pointer;
+        }
+    }
+}
+
+.edit-icon {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    z-index: 111;
+
+    &:hover {
+        filter: contrast(0.6);
+        cursor: pointer;
+    }
+}
+
+/* global.scss oder your-component.component.scss */
+.full-screen-dialog .mat-dialog-container {
+    padding: 0 !important;
+    border-radius: 0 !important;
+    height: 100vh;
+    width: 100vw;
+    max-width: 100vw;
+    max-height: 100vh;
+    overflow: hidden;
+  }

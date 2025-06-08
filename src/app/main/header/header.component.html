@@ -1,0 +1,86 @@
+<div class="header-content">
+    <div class="logo" *ngIf="!this.sharedService.goBackHeader">
+        <img src="./assets/icons/Logo.svg" alt="">
+        <p>DABubble</p>
+    </div>
+
+    <div class="logo" *ngIf="this.sharedService.goBackHeader" (click)="hideChatChannel()">
+       
+        <img class="back-icon" src="./assets/icons/keyboard_arrow_down.png" alt="">
+        <img class="workspace_logo" src="./assets/icons/workspace_logo.png" alt="">
+        <span class="header1">Devspace</span>
+
+    </div>
+
+    <div class="desktop-search">
+        <div class="input">
+            <input id="search" type="text" placeholder="Devspace durchsuchen" [(ngModel)]="searchTerm" (input)="handleInput($event)">
+            <img src="./assets/icons/search-2.png" alt="">
+        </div>
+    </div>
+    <div class="header-user">
+
+        @if (currentUser) {
+        <p>{{ currentUser.name }}</p>
+         @if (userService.isNumber(currentUser.avatar)) {
+            <div class="avatar-container" (click)="isMobile ? openDialogLogout() : null">
+                <img class="avatar" [src]="getAvatarSrc()">
+                <!-- <img class="avatar" [src]="'./assets/avatars/avatar_' + currentUser.avatar + '.png'" alt="User Avatar"> -->
+                <div class="online-point"></div>
+            </div>
+        } @else {
+            <div class="avatar-container" (click)="isMobile ? openDialogLogout() : null">
+                <img class="avatar" [src]="currentUser.avatar" alt="Google User Avatar">
+                <div class="online-point"></div>
+            </div>
+        } 
+
+        } @else {
+        <p>Gast</p>
+        <img src="./assets/avatars/avatar_1.png" alt="" class="gast-avatar">
+        }
+
+        <img (click)="openDialogLogout()" class="header-menu" src="./assets/icons/keyboard_arrow_down_1.png" alt="">
+    </div>
+</div>
+<div class="responsive-search" *ngIf="this.chatService.showMenu">
+    
+        <div class="input">
+            <input id="search" class="res-search" type="text" placeholder="Gehe zu..." 
+                [(ngModel)]="searchTerm"
+                (input)="handleInput($event)">
+            <img src="./assets/icons/search-2.png" alt="">
+        </div>
+</div>
+
+@if (showUsers) {
+    <div class="users-dialog">
+        <div *ngIf="noUserResults" class="no-results">
+            <span>Kein Ergebnis</span>
+        </div>
+        <div *ngIf="!noUserResults">
+        @for (user of filteredUserList; track user.mail) {
+            <div class="user-item" (click)="changeToUser(user)">
+                <img class="further-user-avatar" [src]="userService.getAvatarForUser(user.name)" alt="{{ user.name }}">
+                <span class="user-name">{{ user.name }}</span>
+            </div>
+        }
+        </div>
+    </div>
+}
+
+@if (showChannels) {
+    <div class="users-dialog">
+        <div *ngIf="noChannelResults" class="no-results">
+            <span>Kein Ergebnis</span>
+        </div>
+        <div *ngIf="!noChannelResults">
+            @for (channel of filteredChannels; track channel.channelName) {
+                <div class="user-item" (click)="changeToChannel(channel)">
+                    <img [src]="'./assets/icons/' + channel.tagIcon" alt="Channel Icon">
+                    <span class="user-name">{{ channel.channelName }}</span>
+                </div>
+            }
+        </div>
+    </div> 
+}

@@ -1,0 +1,111 @@
+.add-channel-container {
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    height: 539px;
+    padding: 40px;
+    border-radius: 30px;
+    gap: 20px;
+}
+
+.add-channel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    input {
+        border: 1px solid rgba(173, 176, 217, 1);
+        border-radius: 40px;
+        height: 60px;
+        padding: 18px 20px 18px 50px;
+        box-sizing: border-box;
+        color: rgba(104, 104, 104, 1);
+    }
+}
+
+input[type=text]:focus {
+    border: 1px solid #535AF1;
+    outline: none;
+    transition: all 80ms ease-in;
+}
+
+input[type=text]:hover {
+    border: 1px solid #797EF3;
+    outline: none;
+    transition: all 80ms ease-in;
+}
+
+input::placeholder {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 24.55px;
+    text-align: left;
+    color: rgba(104, 104, 104, 1);
+}
+
+input[type=text] {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 24.55px;
+    text-align: left;
+    font-family: 'Nunito';
+}
+
+.input-channel-name {
+    background: url(../../assets/icons/tag-2.png) no-repeat 20px;
+    align-items: center;
+}
+
+.close-button {
+    height: 40px;
+    width: 40px;
+    border-radius: 20px;
+    border: unset;
+    transition: all 100ms ease-in-out;
+
+    &:hover {
+        background-color: rgba(236, 238, 254, 1);
+        cursor: pointer;
+    }
+}
+
+.create-button {
+    background-color: rgba(68, 77, 242, 1);
+    border-radius: 25px;
+    border: unset;
+    padding: 12px 25px 12px 25px;
+    transition: all 100ms ease-in-out;
+
+    &:hover {
+        background-color: rgba(121, 126, 243, 1);
+        cursor: pointer;
+    }
+}
+
+.create-button-text {
+    color: rgba(255, 255, 255, 1);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 24.55px;
+    text-align: left;
+    font-family: 'Nunito';
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.error-message {
+    color: #ff5252;
+    /* Rot für Fehler */
+    font-size: 0.85rem;
+    margin-top: 4px;
+    font-style: italic;
+}

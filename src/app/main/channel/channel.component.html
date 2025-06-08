@@ -1,0 +1,310 @@
+<div class="channel-body">
+    <div *ngIf="channelService.selectedChannel else loadingTemplate" class="channel-container">
+        <div class="channel-header">
+            <button class="edit-channel" (click)="openDialogEditChannel(channelService.selectedChannel)"  >
+                <p># {{channelService.selectedChannel.channelName}}</p>
+                <img src="./assets/icons/keyboard_arrow_down_1.png" alt="">
+            </button>
+            <div class="add-members">
+                <div class="member-preview" (click)="channelService.openUsersList(selectedChannelId!)">
+                    <img *ngFor="let member of channelService.selectedChannel.members.slice(0, 3) "
+                        [src]="userService.getAvatarForUser(member.name)" alt="" class="avatar">
+                    <img *ngIf="channelService.selectedChannel.members.length >3" src="./assets/icons/add.png" alt=""
+                        style="margin: -20px;">
+                </div>
+                <p *ngIf="channelService.selectedChannel.members.length>0" class="numberofmembers">
+                    {{channelService.selectedChannel.members.length}}
+                </p>
+                <button class="addUserBtn" (click)="channelService.openDialogAddUser()">
+                    <img src="./assets/icons/person_add.png" alt="">
+                </button>
+            </div>
+        </div>
+        <div class="channel-content" #chatContainer [ngClass]="sharedService.isMobile ? 'mobile-channel-content' : 'channel-content'">
+            <table class="chat-table">
+                <tr>
+                    <td style="height: 50px;"></td>
+                </tr>
+                <ng-container *ngFor="let group of filteredSearchMessages">
+                    <tr>
+                        <td colspan="2">
+                            <div class="date-group">
+                                <hr class="separator-line">
+                                <button class="day-time-btn">{{ group.date }}</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr *ngFor="let message of group.messages" style="height: auto;">
+                        <td [ngClass]="{'current-user':userService.isCurrentUser(message.user.name, userId)}">
+                            <div class="message-main"
+                                [ngClass]="{'current-user':userService.isCurrentUser(message.user.name, userId)}">
+                                <img [src]="userService.getAvatarForUser(message.user.name)" alt="" class="avatar">
+                                <div class="message-content" *ngIf="!message.isEditing">
+                                    <div class="name-time"
+                                        [ngClass]="{'current-user': userService.isCurrentUser(message.user.name, userId)}">
+                                        {{ message.user.name }}
+                                        <p class="time">{{ message.formatTimestamp() }}</p>
+                                    </div>
+                                    <div class="speech-bubble"
+                                        [ngClass]="{'b-radius': userService.isCurrentUser(message.user.name, userId)}">
+                                        <div class="speech-bubble-content">
+                                            <span [innerHTML]="message.text?.replace('\n', '<br>')">{{ message.text }}</span>
+                                            <div *ngIf="message.fileUrl" class="fileUrl">
+                                                <!-- Image Preview -->
+                                                <div *ngIf="message.fileType.startsWith('image/')">
+                                                    <img [src]="fileService.getSafeUrl(message.fileUrl)" alt="Image Preview">
+                                                </div>
+                                                <!-- PDF Preview -->
+                                                <div *ngIf="message.fileType === 'application/pdf'">
+                                                    <iframe [src]="fileService.getSafeUrl(message.fileUrl)" width="200" height="70px" style="border: none;"></iframe>
+                                                </div>
+                                                <!-- Other File Types -->
+                                                <a [href]="fileService.getSafeUrl(message.fileUrl)" class="open-file-button" target="_blank">Anhang öffnen</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="position: relative;align-self: flex-end;display: flex;flex-direction: row-reverse;">
+                                        <button class="add-reaction-button" (click)="this.emojiService.toggleReactionContainer($event, message.messageId)">
+                                            <img src="./assets/icons/add_reaction.png" alt="">
+                                        </button>
+                                        <div class="d-flex">
+                                            <div *ngFor="let emojiData of message.emojis">
+                                                <span class="emoji-container"
+                                                    *ngIf="emojiData && emojiData.userIds && emojiData.userIds.length > 0"
+                                                    (click)="emojiService.toggleEmojiReaction(message, emojiData,userId, selectedChannelId)">
+                                                    <img [src]="emojiService.getEmojiSrc(emojiData.emoji)"
+                                                        [alt]="emojiData.emoji" />
+                                                    <span>{{ emojiData.userIds.length }}</span>
+                                                    <div class="emoji-tooltip"
+                                                        *ngIf="emojiData && emojiData.userIds && emojiData.userIds.length > 0">
+                                                        <span class="emojiData">
+                                                            <img [src]="emojiService.getEmojiSrc(emojiData.emoji)"
+                                                                [alt]="emojiData.emoji" width="30px" />
+                                                            <span class="emoji-reaction-text">
+                                                                {{emojiService.getEmojiReactionText(emojiData, userId) }}
+                                                            </span>
+                                                            <span>
+                                                                {{emojiData.userIds.length>1 ? 'haben reagiert':'hat  reagiert'}} 
+                                                            </span>
+                                                        </span>
+                                                    </div>
+                                                </span>
+                                            </div>
+                                        </div>  
+                                        <div class="add-reaction-container" #reactionContainer 
+                                        *ngIf="this.emojiService.showReactionContainer && this.emojiService.clickedMessage == message.messageId">
+                                            <img src="./assets/icons/emoji _nerd face_.png" alt="nerd face"
+                                            (click)="emojiService.toggleUserEmoji(message, 'nerd face', userId, selectedChannelId)" />
+                                        <img src="./assets/icons/🦆 emoji _person raising both hands in celebration_.png"
+                                            alt="raising both hands"
+                                            (click)="emojiService.toggleUserEmoji(message, 'raising both hands', userId, selectedChannelId)" />
+                                        <img src="./assets/icons/emoji _white heavy check mark_.png" alt="heavy check mark"
+                                            (click)="emojiService.toggleUserEmoji(message, 'heavy check mark', userId, selectedChannelId)" />
+                                        <img src="./assets/icons/emoji _rocket_.png" alt="rocket"
+                                            (click)="emojiService.toggleUserEmoji(message, 'rocket', userId, selectedChannelId)" />
+                                        </div>            
+                                    </div>
+                                    <div class="label-answers" (click)="openThread(message)" *ngIf="message.answersCount > 0" >
+                                        {{message.answersCount}} Antworten
+                                        <p class="time">Letzte Antwort {{lastAnswerTime}} </p>
+                                    </div>     
+                                </div>
+                                <!-- edit message -->
+                                <div *ngIf="message.isEditing" class="textAreaContainer">
+                                    <textarea [(ngModel)]="message.editedText" class="textEditingArea"></textarea>
+                                    <div *ngIf="message.fileUrl" class="selectedFileStyle">
+                                        <div *ngIf="message.fileUrl && message.fileType?.startsWith('image/')" class="file-preview">
+                                            <img [src]="message.fileUrl" alt="Image Preview" class="image-preview">
+                                        </div>
+                                        <div *ngIf="message.selectedFile?.type === 'application/pdf' && message.fileUrl" class="file-preview">
+                                            <iframe [src]="message.fileUrl" width="200" height="200" style="border: none;"></iframe>
+                                        </div>
+                                        <img src="./../../../assets/icons/close.png" alt="Close" class="close-icon" (click)="removeFile(message)">
+                                    </div>
+                                    <div class="button-icons-group">
+                                        <img src="./assets/icons/sentiment_satisfied-1.png" alt=""
+                                            (click)="toggleEditEmojiPicker($event)">
+                                        <div class="button-group">
+                                            <button
+                                                (click)="deleteMessage(message)"
+                                                class="saveBtn" style="background-color: red;">delete</button>
+                                            <button (click)="messagesService.cancelMessageEdit(message)"
+                                                class="cancelBtn">Abbrechen</button>
+                                            <button
+                                                (click)="saveMessage(message)"
+                                                class="saveBtn">Speichern</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <emoji-mart *ngIf="showEditEmojiPicker && message.isEditing"
+                                    (emojiSelect)="addEmojiToEditMessage($event, message)" class="emoji-picker">
+                                </emoji-mart>
+                            </div>
+                            <div class="reaction-hover"
+                                [ngClass]="{'reaction-left': userService.isCurrentUser(message.user.name, userId)}"
+                                *ngIf="!message.isEditing">
+                                <ng-container *ngFor="let emojiData of emojiService.getRecentEmojis(message)">
+                                    <img [src]="emojiService.getEmojiSrc(emojiData.emoji)" [alt]="emojiData.emoji"
+                                        (click)="emojiService.toggleUserEmoji(message, emojiData.emoji, userId, selectedChannelId)" />
+                                </ng-container>
+                                <img src="./assets/icons/comment.png" alt="" (click)="openThread(message)">
+                                <img src="./assets/icons/more_vert.png" alt=""
+                                    *ngIf="userService.isCurrentUser(message.user.name, userId)"
+                                    (click)="editDirectMessage(message)">
+                            </div>
+                        </td>
+                    </tr>
+                </ng-container>
+            </table>
+        </div>
+
+        <div class="custom-input">
+            <textarea #messageInput placeholder="Nachricht an #{{channelService.selectedChannel.channelName}}"
+                class="text-area" [(ngModel)]="newMessageText"
+               (keydown.enter)="sendMessage(selectedChannelId,editingMessageId); $event.preventDefault()">
+            </textarea>
+            <div *ngIf="fileService.fileUrl" class="selectedFileStyle">                
+                <div *ngIf="fileService.fileUrl && fileService.selectedFile?.type?.startsWith('image/')"
+                    class="file-preview">
+                    <img [src]="fileService.fileUrl" alt="Image Preview" class="image-preview">
+                </div>
+                <div *ngIf="fileService.selectedFile?.type === 'application/pdf' && fileService.fileUrl"
+                    class="file-preview">
+                    <iframe [src]="fileService.fileUrl" width="200" height="200" style="border: none;"></iframe>
+                </div>
+                <img src="./../../../assets/icons/close.png" alt="Close" class="close-icon"
+                    (click)="onClosePreview()" style="cursor: pointer;">
+            </div>
+
+            <div *ngIf="taggedUser" class="tagged-user-list">
+                <ul class="searchListe">
+                    <li *ngFor="let user of userService.userData">
+                        <div class="selectedUser" (click)="selectUser(user)">
+                            <img [src]="userService.getAvatarForUser(user.name)" alt="">
+                            {{user.name}}
+                        </div>
+                    </li>
+                </ul>
+            </div>
+    
+            <div class="add-reaction">
+                <div class="reactions">
+                    <img src="./assets/icons/add-1.png" alt="Datei hinzufügen" class="add-icon"
+                        (click)="fileInput.click()">
+                    <input type="file" #fileInput style="display: none" (change)="onFileSelected($event)">
+                    <div *ngIf="fileService.errorMessage$ | async as errorMessage" class="error-message" >
+                        {{ errorMessage }}
+                    <img (click)="fileService.resetErrorMessage()" src="./assets/icons/close.png" class="close-icon" style="height: auto !important">
+                    </div>
+                    <!-- Trennlinie -->
+                    <div class="trennLine"></div>
+                    <img src="./assets/icons/alternate_email-1.png" alt="" class="add-mail"
+                        (click)="toggleAutoListe($event)">
+                    <!-- Emoji hinzufügen -->
+                    <img *ngIf="!this.sharedService.isMobile" src="./assets/icons/sentiment_satisfied-1.png"
+                        alt="Emoji hinzufügen" class="add-emoji" (click)="toggleEmojiPicker($event)">
+                </div>
+                <emoji-mart *ngIf="showEmojiPicker" (emojiSelect)="addEmojiToNewMessage($event)"
+                    class="emoji-picker"></emoji-mart>
+                <!-- Nachricht senden -->
+                <button class="send-btn" [disabled]="!fileService.selectedFile && !newMessageText && !selectedUser  && !editingMessageId" 
+                (click)=" sendMessage(selectedChannelId,editingMessageId)"><img src="./assets/icons/Send icon.png"></button>
+            </div>
+        </div>
+    </div>
+
+    <ng-template #loadingTemplate>
+        <div class="channel-container">
+            <div class="channel-template-header">
+                <p>Neue Nachricht</p>
+                <input class="inputChannel" type="text" placeholder="An #channel, oder @jemand oder E-Mail Adresse"
+                    (input)="onInput($event)" [(ngModel)]="inputValue" />
+                <div *ngIf="showAutocomplete">
+                    <ul class="searchListe"  *ngIf=" filteredChannels.length || filteredUsers.length || inputValue.startsWith('@')" style="top:100px;height:auto;">
+                        <ng-container *ngIf="inputValue.startsWith('#')" class="channel_liste">
+                            <li *ngFor="let channel of filteredChannels" (click)="selectValue(channel.channelName)">
+                                <div >{{
+                                    channel.channelName }}
+                                </div>
+                            </li>
+                        </ng-container>
+                      
+                        <ng-container *ngIf="inputValue.startsWith('@')" class="channel_liste">
+                            <li *ngFor="let user of userService.userData" (click)="selectValue(user.name)">
+                                <div class="d-flex"  style="cursor: pointer;">
+                                    <img [src]="userService.getAvatarForUser(user.name)" alt="" class="img-avatar"/>
+                                    {{ user.name }}
+                                </div>
+                            </li>
+                        </ng-container>
+                     
+                        <ng-container *ngIf="!inputValue.startsWith('@') && !inputValue.startsWith('#')" >
+                            <li *ngFor="let user of filteredUsers" (click)="selectValue(user.mail)" >
+                                <div  class="channel_liste" style="cursor: pointer;"> {{user.mail}}</div>
+                            </li>
+                        </ng-container>
+                        
+                    </ul>
+                </div>
+            </div>
+            <div class="custom-input">
+                <textarea placeholder="Starte eine neue Nachricht" class="text-area" [(ngModel)]="newMessageText"
+                    placeholder="Nachricht eingeben"  [disabled]="!isValidInput()" (keydown.enter)="sendMessage(selectedChannelId,editingMessageId); $event.preventDefault()"></textarea>
+                <div *ngIf="fileService.selectedFile" class="selectedFileStyle">
+                    <div *ngIf="fileService.selectedFile.type.startsWith('image/') && fileService.fileUrl"
+                        class="file-preview">
+                        <img [src]="fileService.fileUrl" alt="Image Preview" class="image-preview">
+                    </div>
+                
+                    <div *ngIf="fileService.selectedFile.type === 'application/pdf' && fileService.fileUrl"
+                        class="file-preview">
+                        <iframe [src]="fileService.fileUrl" width="200" height="200" style="border: none;"></iframe>
+                    </div>
+                    <div *ngIf="!fileService.fileUrl || (!fileService.selectedFile.type.startsWith('image/') && fileService.selectedFile.type !== 'application/pdf')"
+                        class="file-preview">
+                        <p>{{ fileService.selectedFile.name }}</p>
+                    </div>
+                    <img src="./../../../assets/icons/close.png" alt="Close" class="close-icon"
+                        (click)="onClosePreview()" style="cursor: pointer;">
+                </div>
+                <div *ngIf="taggedUser" class="tagged-user-list">
+                    <ul class="searchListe" >
+                        <li *ngFor="let user of userService.userData">
+                            <div class="selectedUser" (click)="selectUser(user)">
+                                <img [src]="userService.getAvatarForUser(user.name)" alt="" >
+                                {{user.name}}
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="add-reaction">
+                    <div class="reactions">
+                        <img src="./assets/icons/add-1.png" alt="Datei hinzufügen" class="add-icon"
+                            (click)="fileInput.click()">
+                        <input type="file" #fileInput style="display: none"
+                            (change)="onFileSelected($event)">
+                              <div *ngIf="fileService.errorMessage$ | async as errorMessage" class="error-message" >
+                        {{ errorMessage }}
+                    <img (click)="fileService.resetErrorMessage()" src="./assets/icons/close.png" class="close-icon" style="height: auto !important">
+                    </div>
+                        <div style="height: 35px;width: 1px;background-color:  rgba(104, 104, 104, 1);"></div>
+                        <img src="./assets/icons/sentiment_satisfied-1.png" alt="" class="add-emoji"
+                            (click)="toggleEmojiPicker($event)">
+                        <img src="./assets/icons/alternate_email-1.png" alt="" class="add-mail"
+                            (click)="toggleAutoListe($event)">
+                    </div>
+                    <button class="send-btn"  (click)="sendMessage(selectedChannelId,editingMessageId)">
+                         <img src="./assets/icons/Send icon.png"  >
+                    </button>
+                   
+                </div>
+                <emoji-mart *ngIf="showEmojiPicker" (emojiSelect)="addEmojiToNewMessage($event)"
+                    class="emoji-picker"></emoji-mart>
+            </div>
+        </div>
+    </ng-template>
+    <app-thread *ngIf="isThreadOpen" [selectedChannelId]="selectedChannelId"
+        [channelName]="channelService.selectedChannel?.channelName" [message]="selectedMessage"
+        (threadClosed)="isThreadOpen = false">
+    </app-thread>
+</div>

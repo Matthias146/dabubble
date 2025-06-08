@@ -1,0 +1,97 @@
+<button class="menu-toggle-button" *ngIf="!this.sharedService.isMobile" (click)="openCloseMenu()">
+    <span class="rotate-text header4">{{openCloseButtonText}}</span>
+    <img  src="assets\icons\{{openCloseIcon}}" alt="">
+</button>
+
+<div class="menu-container gap-25" *ngIf="this.showMenu"
+[ngClass]="[containerClass, animationClass]">
+
+    <div class="menu-header-container">
+        <div class="flex-align-center gap-15">
+            <img class="workspace_logo" src="assets\icons\workspace_logo.png" alt="">
+            <span class="header1">Devspace</span>
+        </div>
+        <button class="new-message-button" (mouseover)="newDmIcon = 'edit_square-1.png'"
+            (mouseleave)="newDmIcon = 'edit_square.png'" (click)="onNewMessageClick()" *ngIf="!sharedService.isMobile">
+            <img [src]="'assets/icons/' + newDmIcon" alt="New Message Icon">
+        </button>
+        <img src="assets/icons/edit-icon.png" alt="Edit Icon" *ngIf="sharedService.isMobile"
+            (click)="onNewMessageClick()" class="edit-icon">
+    </div>
+
+    <div class="channel-container">
+
+        <div class="channel-header-container">
+            <div class="channel-header" (click)="openCloseDiv('showChannel')"
+                (mouseover)="channelIcon1 ='arrow_drop_down-1.png'; channelIcon2 = 'workspaces-1.png'"
+                (mouseleave)="channelIcon1 ='arrow_drop_down.png'; channelIcon2 = 'workspaces.png'">
+                <img [ngClass]="{'rotateArrow': !showChannel}" src="assets\icons\{{channelIcon1}}" alt="">
+                <div class="logo-cat-container">
+                    <img src="assets\icons\{{channelIcon2}}" alt="">
+                    <span class="header2">Channels</span>
+                </div>
+            </div>
+            <button class="plus-button" (click)="openDialogAddChannel()" (mouseover)="addChannelIcon1 = 'add-2.png'"
+                (mouseleave)="addChannelIcon1 = 'add-1.png'">
+                <img src="assets\icons\{{addChannelIcon1}}" alt="">
+            </button>
+        </div>
+
+        <!-- hier wird funktion onChannelClick() hinzugefügt und track ist bei channelId -->
+        <div class="added-channels" *ngIf="showChannel">
+            <div *ngFor="let channel of filteredChannels; trackBy: trackByChannelId" class="channel-name"
+                (click)="onChannelClick(channel)" (mouseover)="channel.tagIcon = 'tag-1.png'"
+                (mouseleave)="channel.tagIcon = 'tag.png'">
+                <img [src]="'./assets/icons/' + channel.tagIcon" alt="Channel Icon">
+                <span class="header3"  >{{ channel.channelName }}</span>
+            </div>
+        </div>
+
+        <div class="add-channel" *ngIf="showChannel">
+            <div class="add-channel-header" (click)="openDialogAddChannel()"
+                (mouseover)="addChannelIcon = 'add_circle-1.png'" (mouseleave)="addChannelIcon = 'add_circle.png'">
+                <img src="assets\icons\{{addChannelIcon}}" alt="">
+                <span class="header3">Channel hinzufügen</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="dm-container" [ngClass]="this.sharedService.isMobile ? 'dm-container-mobile' : 'dm-container'">
+        <div class="dm-header-container">
+
+            <div class="dm-header" (click)="openCloseDiv('showUser')"
+                (mouseover)="dmIcon1 ='arrow_drop_down-1.png'; dmIcon2 = 'account_circle-1.png'"
+                (mouseleave)="dmIcon1 ='arrow_drop_down.png'; dmIcon2 = 'account_circle.png'">
+                <img [ngClass]="{'rotateArrow': !showUser}" src="assets\icons\{{dmIcon1}}" alt="">
+                <div class="logo-cat-container">
+                    <img src="assets\icons\{{dmIcon2}}" alt="">
+                    <span class="header2">Direktnachrichten</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="user-container" *ngIf="showUser">
+
+
+            <div class="user" (click)="this.chatService.openDirectMessage(currentUserId, user.userId); selectChat();"
+                *ngFor="let user of filteredUsers">
+                <div class="avatar-container">
+                    <img class="user-avatar" [src]="getAvatarForUser(user.name)" alt="">
+                    <div [ngClass]="{'offline-point': !user.online}" class="online-point"></div>
+                    <div *ngIf="unreadCounts.get(user.chatId) ?? 0" class="message-count">
+                        {{unreadCounts.get(user.chatId)}}
+                    </div>
+                </div>
+                <span class="header3">{{user.name}}
+                    @if (user.name === currentUser?.name) {
+                    (Du)
+                    }
+                </span>
+            </div>
+        </div>
+
+
+    </div>
+</div>

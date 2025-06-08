@@ -1,0 +1,23 @@
+<div class="header">
+    <div class="logo">
+        <img src="./assets/icons/Logo.svg" alt="">
+        <p>DABubble</p>
+    </div>
+</div>
+
+@if (firstPage) {
+    <app-firstpage 
+        [user]="createdUser" 
+        (switchToSignin)="handleSwitchToSignin()"
+        (closeFirstPage)="firstPage = $event" 
+        (userCreated)="createdUser = $event" 
+        (openAvatarPage)="avatar = $event"></app-firstpage>
+}
+@if (avatar) {
+    <app-choose-avatar 
+        [user]="createdUser" 
+        (switchToSignin)="handleSwitchToSignin()"
+        (closeAvatarPage)="avatar = $event"
+        (openFirstPage)="firstPage = $event"
+        ></app-choose-avatar>
+}

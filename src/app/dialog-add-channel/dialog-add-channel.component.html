@@ -1,0 +1,31 @@
+<div class="add-channel-container">
+    <div class="add-channel-header">
+        <span class="header1">Channel erstellen</span>
+        <button class="close-button" (click)="dialogRef.close()" (mouseover)="closeButtonIcon = 'close-1.png'"
+            (mouseleave)="closeButtonIcon = 'close.png'">
+            <img src="./assets/icons/{{closeButtonIcon}}" alt="">
+        </button>
+    </div>
+    <p class="header3">Channels dienen deinem Team zur Kommunikation. Am besten sollten sie themenbezogen sein
+        #marketing zum Beispiel.</p>
+    <div class="input-container">
+        <span class="header5">Channel-Name</span>
+        <input class="input-channel-name" type="text" required placeholder="z.B. Kooperationsprojekte" id="channelName"
+            [formControl]="channelName" (blur)="validateChannelName()">
+        <div *ngIf="channelExists" class="error-message">
+            Ein Channel mit diesem Namen existiert bereits. Bitte wählen Sie einen anderen Namen.
+        </div>
+    </div>
+    <div class="input-container">
+        <div>
+            <span class="header5">Beschreibung</span>
+            <span class="header3"> (optional)</span>
+        </div>
+        <input type="text" placeholder="Dein Text hier" [formControl]="channelDescription">
+    </div>
+    <div class="button-container">
+        <button class="create-button" type="submit" (click)="createNewChannel()" [disabled]="channelName.invalid">
+            <span class="create-button-text">Erstellen</span>
+        </button>
+    </div>
+</div>

@@ -1,0 +1,14 @@
+Redirect 301 /test-htaccess https://www.google.com
+
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    
+    # Wenn die angeforderte Datei oder der Ordner existiert, lasse die Anfrage durch
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    
+    # Andernfalls leite alle Anfragen an index.html weiter
+    RewriteRule ^.*$ /index.html [L]
+</IfModule>

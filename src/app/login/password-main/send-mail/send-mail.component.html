@@ -1,0 +1,51 @@
+<div class="login-header">
+    <div class="logo">
+        <img src="./assets/icons/Logo.svg" alt="">
+        <p>DABubble</p>
+    </div>
+</div>
+<div class="login-content">
+    <div class="header">
+        <img (click)="getBack()" src="./assets/icons/arrow_back.png" alt="">
+        <h1>Passwort zurücksetzen</h1>
+    </div>
+
+    <p>Bitte geben Sie Ihre E-Mail-Adresse ein.</p>
+
+    <form (ngSubmit)="checkEmail(mailInput.value, $event)" #form="ngForm">
+        <div class="input">
+            <img [ngStyle]="{'width': '20px'}" src="./assets/icons/login-mail.svg" alt="">
+            <input 
+                name="mailInput" 
+                #mailInput="ngModel"  
+                required 
+                placeholder="beispielname@email.com" 
+                [(ngModel)]="email"
+                (keyup)="validateEmail(mailInput.value)"
+                pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" />
+        </div>
+
+        @if (emailNotFound) {
+            <p style="color: red;">Diese E-Mail-Adresse ist uns nicht bekannt.</p>
+        }
+
+        <p>Wir senden Ihnen eine E-Mail, über die 
+            Sie Ihr Passwort ändern können.</p>
+
+        <div class="login-buttons">
+            <button type="submit" class="login-button"
+            [disabled]="!buttonEnabled" 
+            [ngClass]="{'active-button': buttonEnabled}"
+            >E-Mail senden</button>
+        </div>
+        
+    </form>
+</div>
+
+@if (success) {
+    <div class="success-dialog">
+        <div class="success-inner-dialog">
+            <p>E-Mail gesendet!</p>
+        </div>
+    </div>
+}

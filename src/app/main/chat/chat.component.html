@@ -1,0 +1,1346 @@
+<div
+  class="channel-container"
+  *ngIf="user"
+  [ngClass]="
+    this.sharedService.isMobile
+      ? 'mobile-channel-container'
+      : 'channel-container'
+  "
+>
+  <div
+    class="channel-header"
+    [ngClass]="
+      this.sharedService.isMobile ? 'channel-header-mobile' : 'channel-header'
+    "
+  >
+    <div class="user" (click)="openUserProfil(user)">
+      <div class="avatar-container">
+        <img class="user-avatar" [src]="getAvatarForUser(user.name)" alt="" />
+        <div
+          [ngClass]="{ 'offline-point': !user.online }"
+          class="online-point"
+        ></div>
+      </div>
+      <span
+        class="header1"
+        [ngClass]="this.sharedService.isMobile ? 'header2' : 'header1'"
+        >{{ user.name }}
+        @if (user.name === currentUser?.name) { (Du) }
+      </span>
+    </div>
+  </div>
+  <div
+    class="channel-content"
+    #chatContainer
+    [ngClass]="
+      this.sharedService.isMobile ? 'mobile-channel-content' : 'channel-content'
+    "
+  >
+    <!-- Wenn keine Nachrichten vorhanden sind -->
+    <div
+      class="new-chat-info-container"
+      *ngIf="chatService.chatIsEmpty"
+      [ngClass]="
+        this.sharedService.isMobile
+          ? 'mobile-new-chat-info-container'
+          : 'new-chat-info-container'
+      "
+    >
+      <div class="new-chat-user-avatar-container">
+        <img
+          class="new-chat-user-avatar"
+          [src]="getAvatarForUser(user.name)"
+          alt=""
+          [ngClass]="
+            this.sharedService.isMobile
+              ? 'mobile-new-chat-user-avatar'
+              : 'new-chat-user-avatar'
+          "
+        />
+        <span
+          class="header1"
+          [ngClass]="this.sharedService.isMobile ? 'header2' : 'header1'"
+          >{{ user.name }}
+          @if (user.name === currentUser?.name) { (Du) }
+        </span>
+      </div>
+
+      @if (user.name === currentUser?.name) {
+      <span class="info header6"
+        ><b>Dieser Raum ist nur für dich da.</b> Mache dir Notizen, liste deine
+        To-dos auf oder bewahre Links und Dateien griffbereit auf. Du kannst
+        hier auch gerne Dinge mit dir selbst besprechen.
+      </span>
+      } @else {
+      <span class="info header6"
+        >Diese Unterhaltung findet nur zwischen
+        <span class="name-colored">&#64;{{ user.name }}</span> und dir
+        statt.</span
+      >
+      }
+    </div>
+    <div *ngFor="let group of filteredSearchMessages; let i = index">
+      <div style="position: relative" *ngIf="!chatService.chatIsEmpty">
+        <hr class="separator-line" />
+        <button class="day-time-btn header3">
+          {{
+            isToday(group.messages[0].timestamp)
+              ? "Heute"
+              : group.messages[0].dayDateMonth
+          }}
+        </button>
+      </div>
+
+      <div *ngIf="!chatService.chatIsEmpty">
+        <div *ngFor="let message of group.messages; let j = index">
+          <!-- Nachricht des anderen Benutzers -->
+          <div
+            *ngIf="
+              message.senderId == user.userId &&
+              user.userId !== currentUser.userId
+            "
+          >
+            <table class="chat-table">
+              <tr>
+                <td>
+                  <div
+                    class="message-main"
+                    [ngClass]="
+                      this.sharedService.isMobile
+                        ? 'message-main-mobile'
+                        : 'message-main'
+                    "
+                  >
+                    @if (userService.isNumber(user.avatar)) {
+                    <img
+                      class="avatar"
+                      [ngClass]="
+                        this.sharedService.isMobile ? 'avatar-mobile' : 'avatar'
+                      "
+                      src="\assets\avatars\avatar_{{ user.avatar }}.png"
+                      alt=""
+                    />
+                    } @else {
+                    <img
+                      class="avatar"
+                      [ngClass]="
+                        this.sharedService.isMobile ? 'avatar-mobile' : 'avatar'
+                      "
+                      src="{{ user.avatar }}"
+                      alt=""
+                    />
+                    }
+                    <div class="message-content">
+                      <div class="name-time">
+                        {{ user.name }}
+                        <p class="time">{{ message.time }} Uhr</p>
+                      </div>
+                      <div class="speech-bubble">
+                        <span
+                          [innerHTML]="message.text?.replace('\n', '<br>')"
+                          >{{ message.text }}</span
+                        >
+                        <div *ngIf="message.fileName" class="file-container">
+                          <span>{{ message.fileName }}</span>
+                          <img
+                            *ngIf="
+                              message.fileType == 'image/jpeg' ||
+                              message.fileType == 'image/png'
+                            "
+                            class="preview-img"
+                            [src]="message.fileDownloadUrl"
+                            alt=""
+                          />
+
+                          <object
+                            *ngIf="message.fileType == 'application/pdf'"
+                            [data]="message.safeFileUrl"
+                            type="application/pdf"
+                            width="60%"
+                            height="100%"
+                          >
+                            Dein Browser unterstützt keine PDF-Anzeige
+                          </object>
+
+                          <button
+                            class="open-file-button"
+                            (click)="
+                              this.fileService.downloadFile(
+                                message.fileDownloadUrl,
+                                message.fileName
+                              )
+                            "
+                          >
+                            Anhang öffnen
+                          </button>
+                        </div>
+                        <div *ngIf="message.audioDownloadUrl">
+                          <audio controls>
+                            <source
+                              [src]="message.audioDownloadUrl"
+                              type="audio/mpeg"
+                            />
+                            Your browser does not support the audio element.
+                          </audio>
+                        </div>
+                      </div>
+
+                      <div class="reaction-container">
+                        <div
+                          *ngIf="
+                            message.reactionNerd &&
+                            message.reactionNerd.length > 0
+                          "
+                          style="position: relative"
+                        >
+                          <button
+                            class="reaction-button"
+                            (click)="
+                              this.reactionService.addReaction(
+                                currentUser,
+                                message,
+                                'reactionNerd'
+                              )
+                            "
+                            (mouseenter)="
+                              this.reactionService.isHovered(
+                                message.messageId,
+                                'reactionNerd'
+                              )
+                            "
+                            (mouseleave)="
+                              this.reactionService.isHovered(null, null)
+                            "
+                          >
+                            <img
+                              src="./assets/icons/emoji _nerd face_.png"
+                              alt=""
+                            />
+                            <span>{{ message.reactionNerd.length }}</span>
+                          </button>
+
+                          <div
+                            class="reaction-bubble"
+                            [ngClass]="{
+                              visible: this.reactionService.isBubbleVisible(
+                                message.messageId,
+                                'reactionNerd'
+                              ),
+                              hidden: !this.reactionService.isBubbleVisible(
+                                message.messageId,
+                                'reactionNerd'
+                              )
+                            }"
+                          >
+                            <img
+                              src="./assets/icons/emoji _nerd face_.png"
+                              alt=""
+                            />
+                            @for (user of message.reactionNerd; track $index) {
+                            @if(user.name !== currentUser.name) {
+                            <span class="header5">{{ user.name }}</span>
+                            @if(user.name !== currentUser.name &&
+                            message.reactionNerd.length == 1){
+                            <span>hat reagiert</span>
+                            } } @else if(user.name == currentUser.name){
+                            @if(message.reactionNerd.length == 2){
+                            <span class="header5">und</span>
+                            }
+                            <span class="header5">Du</span>
+                            @if(user.name == currentUser.name &&
+                            message.reactionNerd.length == 1){
+                            <span>hast reagiert</span>
+                            } @if(message.reactionNerd.length == 2){
+                            <span>haben reagiert</span>
+                            } } }
+                          </div>
+                        </div>
+
+                        <div
+                          *ngIf="
+                            message.reactionCelebrate &&
+                            message.reactionCelebrate.length > 0
+                          "
+                          style="position: relative"
+                        >
+                          <button
+                            class="reaction-button"
+                            (click)="
+                              this.reactionService.addReaction(
+                                currentUser,
+                                message,
+                                'reactionCelebrate'
+                              )
+                            "
+                            (mouseenter)="
+                              this.reactionService.isHovered(
+                                message.messageId,
+                                'reactionCelebrate'
+                              )
+                            "
+                            (mouseleave)="
+                              this.reactionService.isHovered(null, null)
+                            "
+                          >
+                            <img
+                              src="./assets/icons/emoji _person raising both hands in celebration_.png"
+                              alt=""
+                            />
+                            <span>{{ message.reactionCelebrate.length }}</span>
+                          </button>
+
+                          <div
+                            class="reaction-bubble"
+                            [ngClass]="{
+                              visible: this.reactionService.isBubbleVisible(
+                                message.messageId,
+                                'reactionCelebrate'
+                              ),
+                              hidden: !this.reactionService.isBubbleVisible(
+                                message.messageId,
+                                'reactionCelebrate'
+                              )
+                            }"
+                          >
+                            <img
+                              src="./assets/icons/emoji _person raising both hands in celebration_.png"
+                              alt=""
+                            />
+
+                            @for (user of message.reactionCelebrate; track
+                            $index) { @if(user.name !== currentUser.name) {
+                            <span class="header5">{{ user.name }}</span>
+                            @if(user.name !== currentUser.name &&
+                            message.reactionCelebrate.length == 1){
+                            <span>hat reagiert</span>
+                            } } @else if(user.name == currentUser.name){
+                            @if(message.reactionCelebrate.length == 2){
+                            <span class="header5">und</span>
+                            }
+                            <span class="header5">Du</span>
+                            @if(user.name == currentUser.name &&
+                            message.reactionCelebrate.length == 1){
+                            <span>hast reagiert</span>
+                            } @if(message.reactionCelebrate.length == 2){
+                            <span>haben reagiert</span>
+                            } } }
+                          </div>
+                        </div>
+
+                        <div
+                          *ngIf="
+                            message.reactionCheck &&
+                            message.reactionCheck.length > 0
+                          "
+                          style="position: relative"
+                        >
+                          <button
+                            class="reaction-button"
+                            (click)="
+                              this.reactionService.addReaction(
+                                currentUser,
+                                message,
+                                'reactionCheck'
+                              )
+                            "
+                            (mouseenter)="
+                              this.reactionService.isHovered(
+                                message.messageId,
+                                'reactionCheck'
+                              )
+                            "
+                            (mouseleave)="
+                              this.reactionService.isHovered(null, null)
+                            "
+                          >
+                            <img
+                              src="./assets/icons/emoji _white heavy check mark_.png"
+                              alt=""
+                            />
+                            <span>{{ message.reactionCheck.length }}</span>
+                          </button>
+
+                          <div
+                            class="reaction-bubble"
+                            [ngClass]="{
+                              visible: this.reactionService.isBubbleVisible(
+                                message.messageId,
+                                'reactionCheck'
+                              ),
+                              hidden: !this.reactionService.isBubbleVisible(
+                                message.messageId,
+                                'reactionCheck'
+                              )
+                            }"
+                          >
+                            <img
+                              src="./assets/icons/emoji _person raising both hands in celebration_.png"
+                              alt=""
+                            />
+
+                            @for (user of message.reactionCheck; track $index) {
+                            @if(user.name !== currentUser.name) {
+                            <span class="header5">{{ user.name }}</span>
+                            @if(user.name !== currentUser.name &&
+                            message.reactionCheck.length == 1){
+                            <span>hat reagiert</span>
+                            } } @else if(user.name == currentUser.name){
+                            @if(message.reactionCheck.length == 2){
+                            <span class="header5">und</span>
+                            }
+                            <span class="header5">Du</span>
+                            @if(user.name == currentUser.name &&
+                            message.reactionCheck.length == 1){
+                            <span>hast reagiert</span>
+                            } @if(message.reactionCheck.length == 2){
+                            <span>haben reagiert</span>
+                            } } }
+                          </div>
+                        </div>
+
+                        <div
+                          *ngIf="
+                            message.reactionRocket &&
+                            message.reactionRocket.length > 0
+                          "
+                          style="position: relative"
+                        >
+                          <button
+                            class="reaction-button"
+                            (click)="
+                              this.reactionService.addReaction(
+                                currentUser,
+                                message,
+                                'reactionRocket'
+                              )
+                            "
+                            (mouseenter)="
+                              this.reactionService.isHovered(
+                                message.messageId,
+                                'reactionRocket'
+                              )
+                            "
+                            (mouseleave)="
+                              this.reactionService.isHovered(null, null)
+                            "
+                          >
+                            <img
+                              src="./assets/icons/emoji _rocket_.png"
+                              alt=""
+                            />
+                            <span>{{ message.reactionRocket.length }}</span>
+                          </button>
+
+                          <div
+                            class="reaction-bubble"
+                            [ngClass]="{
+                              visible: this.reactionService.isBubbleVisible(
+                                message.messageId,
+                                'reactionRocket'
+                              ),
+                              hidden: !this.reactionService.isBubbleVisible(
+                                message.messageId,
+                                'reactionRocket'
+                              )
+                            }"
+                          >
+                            <img
+                              src="./assets/icons/emoji _rocket_.png"
+                              alt=""
+                            />
+
+                            @for (user of message.reactionRocket; track $index)
+                            { @if(user.name !== currentUser.name) {
+                            <span class="header5">{{ user.name }}</span>
+                            @if(user.name !== currentUser.name &&
+                            message.reactionRocket.length == 1){
+                            <span>hat reagiert</span>
+                            } } @else if(user.name == currentUser.name){
+                            @if(message.reactionRocket.length == 2){
+                            <span class="header5">und</span>
+                            }
+                            <span class="header5">Du</span>
+                            @if(user.name == currentUser.name &&
+                            message.reactionRocket.length == 1){
+                            <span>hast reagiert</span>
+                            } @if(message.reactionRocket.length == 2){
+                            <span>haben reagiert</span>
+                            } } }
+                          </div>
+                        </div>
+
+                        <div style="position: relative">
+                          <button
+                            class="add-reaction-button"
+                            (click)="
+                              this.reactionService.toggleReactionContainer(
+                                $event,
+                                message.messageId
+                              )
+                            "
+                          >
+                            <img src="./assets/icons/add_reaction.png" alt="" />
+                          </button>
+                          <div
+                            class="add-reaction-container"
+                            *ngIf="
+                              this.reactionService.showReactionContainer &&
+                              this.reactionService.clickedMessage ==
+                                message.messageId
+                            "
+                          >
+                            <img
+                              (click)="
+                                this.reactionService.addReaction(
+                                  currentUser,
+                                  message,
+                                  'reactionNerd'
+                                )
+                              "
+                              src="./assets/icons/emoji _reactionNerd_.png"
+                              alt=""
+                            />
+                            <img
+                              (click)="
+                                this.reactionService.addReaction(
+                                  currentUser,
+                                  message,
+                                  'reactionCelebrate'
+                                )
+                              "
+                              src="./assets/icons/emoji _reactionCelebrate_.png"
+                              alt=""
+                            />
+                            <img
+                              (click)="
+                                this.reactionService.addReaction(
+                                  currentUser,
+                                  message,
+                                  'reactionCheck'
+                                )
+                              "
+                              src="./assets/icons/emoji _reactionCheck_.png"
+                              alt=""
+                            />
+                            <img
+                              (click)="
+                                this.reactionService.addReaction(
+                                  currentUser,
+                                  message,
+                                  'reactionRocket'
+                                )
+                              "
+                              src="./assets/icons/emoji _reactionRocket_.png"
+                              alt=""
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="reaction-hover">
+                    @for(lastReaction of this.reactionService.lastReactions;
+                    track lastReaction){
+                    <img
+                      (click)="
+                        this.reactionService.addReaction(
+                          currentUser,
+                          message,
+                          lastReaction
+                        )
+                      "
+                      src="./assets/icons/emoji _{{ lastReaction }}_.png"
+                      alt=""
+                    />
+                    }
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- Nachricht des aktuellen Benutzers -->
+          <div *ngIf="message.senderId == currentUser.userId">
+            <table class="chat-table-sender">
+              <tr>
+                <td>
+                  <div
+                    class="reaction-hover"
+                    *ngIf="editingMessageId !== message.messageId"
+                  >
+                    @for(lastReaction of this.reactionService.lastReactions;
+                    track lastReaction){
+                    <img
+                      (click)="
+                        this.reactionService.addReaction(
+                          currentUser,
+                          message,
+                          lastReaction
+                        )
+                      "
+                      src="./assets/icons/emoji _{{ lastReaction }}_.png"
+                      alt=""
+                    />
+                    }
+                    <img
+                      src="./assets/icons/more_vert.png"
+                      alt=""
+                      (click)="editDirectMessage(message)"
+                    />
+                  </div>
+
+                  <div
+                    class="message-main"
+                    [ngClass]="
+                      this.sharedService.isMobile
+                        ? 'message-main-mobile'
+                        : 'message-main'
+                    "
+                  >
+                    <div
+                      class="message-content"
+                      *ngIf="editingMessageId !== message.messageId"
+                    >
+                      <div class="name-time">
+                        <p class="time">{{ message.time }} Uhr</p>
+                        {{ currentUser.name + " (Du)" }}
+                      </div>
+                      <div class="speech-bubble">
+                        <span
+                          [innerHTML]="message.text?.replace('\n', '<br>')"
+                          >{{ message.text }}</span
+                        >
+
+                        <div *ngIf="message.fileName" class="file-container">
+                          <span>{{ message.fileName }}</span>
+
+                          <img
+                            *ngIf="
+                              message.fileType == 'image/jpeg' ||
+                              message.fileType == 'image/png'
+                            "
+                            class="preview-img"
+                            [src]="message.fileDownloadUrl"
+                            alt=""
+                          />
+
+                          <object
+                            *ngIf="message.fileType == 'application/pdf'"
+                            [data]="message.safeFileUrl"
+                            type="application/pdf"
+                            width="60%"
+                            height="100%"
+                          >
+                            Dein Browser unterstützt keine PDF-Anzeige
+                          </object>
+
+                          <button
+                            class="open-file-button"
+                            (click)="
+                              this.fileService.downloadFile(
+                                message.fileDownloadUrl,
+                                message.fileName
+                              )
+                            "
+                          >
+                            Anhang öffnen
+                          </button>
+                        </div>
+                        <div *ngIf="message.audioDownloadUrl">
+                          <audio controls>
+                            <source
+                              [src]="message.audioDownloadUrl"
+                              type="audio/mpeg"
+                            />
+                            Your browser does not support the audio element.
+                          </audio>
+                        </div>
+                      </div>
+
+                      <div class="reaction-container">
+                        <div
+                          *ngIf="
+                            message.reactionNerd &&
+                            message.reactionNerd.length > 0
+                          "
+                          style="position: relative"
+                        >
+                          <button
+                            class="reaction-button"
+                            (click)="
+                              this.reactionService.addReaction(
+                                currentUser,
+                                message,
+                                'reactionNerd'
+                              )
+                            "
+                            (mouseenter)="
+                              this.reactionService.isHovered(
+                                message.messageId,
+                                'reactionNerd'
+                              )
+                            "
+                            (mouseleave)="
+                              this.reactionService.isHovered(null, null)
+                            "
+                          >
+                            <img
+                              src="./assets/icons/emoji _nerd face_.png"
+                              alt=""
+                            />
+                            <span>{{ message.reactionNerd.length }}</span>
+                          </button>
+
+                          <div
+                            class="reaction-bubble"
+                            [ngClass]="{
+                              visible: this.reactionService.isBubbleVisible(
+                                message.messageId,
+                                'reactionNerd'
+                              ),
+                              hidden: !this.reactionService.isBubbleVisible(
+                                message.messageId,
+                                'reactionNerd'
+                              )
+                            }"
+                          >
+                            <img
+                              src="./assets/icons/emoji _nerd face_.png"
+                              alt=""
+                            />
+                            @for (user of message.reactionNerd; track $index) {
+                            @if(user.name !== currentUser.name) {
+                            <span class="header5">{{ user.name }}</span>
+                            @if(user.name !== currentUser.name &&
+                            message.reactionNerd.length == 1){
+                            <span>hat reagiert</span>
+                            } } @else if(user.name == currentUser.name){
+                            @if(message.reactionNerd.length == 2){
+                            <span class="header5">und</span>
+                            }
+                            <span class="header5">Du</span>
+                            @if(user.name == currentUser.name &&
+                            message.reactionNerd.length == 1){
+                            <span>hast reagiert</span>
+                            } @if(message.reactionNerd.length == 2){
+                            <span>haben reagiert</span>
+                            } } }
+                          </div>
+                        </div>
+
+                        <div
+                          *ngIf="
+                            message.reactionCelebrate &&
+                            message.reactionCelebrate.length > 0
+                          "
+                          style="position: relative"
+                        >
+                          <button
+                            class="reaction-button"
+                            (click)="
+                              this.reactionService.addReaction(
+                                currentUser,
+                                message,
+                                'reactionCelebrate'
+                              )
+                            "
+                            (mouseenter)="
+                              this.reactionService.isHovered(
+                                message.messageId,
+                                'reactionCelebrate'
+                              )
+                            "
+                            (mouseleave)="
+                              this.reactionService.isHovered(null, null)
+                            "
+                          >
+                            <img
+                              src="./assets/icons/emoji _person raising both hands in celebration_.png"
+                              alt=""
+                            />
+                            <span>{{ message.reactionCelebrate.length }}</span>
+                          </button>
+
+                          <div
+                            class="reaction-bubble"
+                            [ngClass]="{
+                              visible: this.reactionService.isBubbleVisible(
+                                message.messageId,
+                                'reactionCelebrate'
+                              ),
+                              hidden: !this.reactionService.isBubbleVisible(
+                                message.messageId,
+                                'reactionCelebrate'
+                              )
+                            }"
+                          >
+                            <img
+                              src="./assets/icons/emoji _person raising both hands in celebration_.png"
+                              alt=""
+                            />
+
+                            @for (user of message.reactionCelebrate; track
+                            $index) { @if(user.name !== currentUser.name) {
+                            <span class="header5">{{ user.name }}</span>
+                            @if(user.name !== currentUser.name &&
+                            message.reactionCelebrate.length == 1){
+                            <span>hat reagiert</span>
+                            } } @else if(user.name == currentUser.name){
+                            @if(message.reactionCelebrate.length == 2){
+                            <span class="header5">und</span>
+                            }
+                            <span class="header5">Du</span>
+                            @if(user.name == currentUser.name &&
+                            message.reactionCelebrate.length == 1){
+                            <span>hast reagiert</span>
+                            } @if(message.reactionCelebrate.length == 2){
+                            <span>haben reagiert</span>
+                            } } }
+                          </div>
+                        </div>
+
+                        <div
+                          *ngIf="
+                            message.reactionCheck &&
+                            message.reactionCheck.length > 0
+                          "
+                          style="position: relative"
+                        >
+                          <button
+                            class="reaction-button"
+                            (click)="
+                              this.reactionService.addReaction(
+                                currentUser,
+                                message,
+                                'reactionCheck'
+                              )
+                            "
+                            (mouseenter)="
+                              this.reactionService.isHovered(
+                                message.messageId,
+                                'reactionCheck'
+                              )
+                            "
+                            (mouseleave)="
+                              this.reactionService.isHovered(null, null)
+                            "
+                          >
+                            <img
+                              src="./assets/icons/emoji _white heavy check mark_.png"
+                              alt=""
+                            />
+                            <span>{{ message.reactionCheck.length }}</span>
+                          </button>
+
+                          <div
+                            class="reaction-bubble"
+                            [ngClass]="{
+                              visible: this.reactionService.isBubbleVisible(
+                                message.messageId,
+                                'reactionCheck'
+                              ),
+                              hidden: !this.reactionService.isBubbleVisible(
+                                message.messageId,
+                                'reactionCheck'
+                              )
+                            }"
+                          >
+                            <img
+                              src="./assets/icons/emoji _white heavy check mark_.png"
+                              alt=""
+                            />
+
+                            @for (user of message.reactionCheck; track $index) {
+                            @if(user.name !== currentUser.name) {
+                            <span class="header5">{{ user.name }}</span>
+                            @if(user.name !== currentUser.name &&
+                            message.reactionCheck.length == 1){
+                            <span>hat reagiert</span>
+                            } } @else if(user.name == currentUser.name){
+                            @if(message.reactionCheck.length == 2){
+                            <span class="header5">und</span>
+                            }
+                            <span class="header5">Du</span>
+                            @if(user.name == currentUser.name &&
+                            message.reactionCheck.length == 1){
+                            <span>hast reagiert</span>
+                            } @if(message.reactionCheck.length == 2){
+                            <span>haben reagiert</span>
+                            } } }
+                          </div>
+                        </div>
+
+                        <div
+                          *ngIf="
+                            message.reactionRocket &&
+                            message.reactionRocket.length > 0
+                          "
+                          style="position: relative"
+                        >
+                          <button
+                            class="reaction-button"
+                            (click)="
+                              this.reactionService.addReaction(
+                                currentUser,
+                                message,
+                                'reactionRocket'
+                              )
+                            "
+                            (mouseenter)="
+                              this.reactionService.isHovered(
+                                message.messageId,
+                                'reactionRocket'
+                              )
+                            "
+                            (mouseleave)="
+                              this.reactionService.isHovered(null, null)
+                            "
+                          >
+                            <img
+                              src="./assets/icons/emoji _rocket_.png"
+                              alt=""
+                            />
+                            <span>{{ message.reactionRocket.length }}</span>
+                          </button>
+
+                          <div
+                            class="reaction-bubble"
+                            [ngClass]="{
+                              visible: this.reactionService.isBubbleVisible(
+                                message.messageId,
+                                'reactionRocket'
+                              ),
+                              hidden: !this.reactionService.isBubbleVisible(
+                                message.messageId,
+                                'reactionRocket'
+                              )
+                            }"
+                          >
+                            <img
+                              src="./assets/icons/emoji _rocket_.png"
+                              alt=""
+                            />
+
+                            @for (user of message.reactionRocket; track $index)
+                            { @if(user.name !== currentUser.name) {
+                            <span class="header5">{{ user.name }}</span>
+                            @if(user.name !== currentUser.name &&
+                            message.reactionRocket.length == 1){
+                            <span>hat reagiert</span>
+                            } } @else if(user.name == currentUser.name){
+                            @if(message.reactionRocket.length == 2){
+                            <span class="header5">und</span>
+                            }
+                            <span class="header5">Du</span>
+                            @if(user.name == currentUser.name &&
+                            message.reactionRocket.length == 1){
+                            <span>hast reagiert</span>
+                            } @if(message.reactionRocket.length == 2){
+                            <span>haben reagiert</span>
+                            } } }
+                          </div>
+                        </div>
+                        <div style="position: relative">
+                          <button
+                            class="add-reaction-button"
+                            (click)="
+                              this.reactionService.toggleReactionContainer(
+                                $event,
+                                message.messageId
+                              )
+                            "
+                          >
+                            <img src="./assets/icons/add_reaction.png" alt="" />
+                          </button>
+                          <div
+                            class="add-reaction-container"
+                            *ngIf="
+                              this.reactionService.showReactionContainer &&
+                              this.reactionService.clickedMessage ==
+                                message.messageId
+                            "
+                          >
+                            <img
+                              (click)="
+                                this.reactionService.addReaction(
+                                  currentUser,
+                                  message,
+                                  'reactionNerd'
+                                )
+                              "
+                              src="./assets/icons/emoji _reactionNerd_.png"
+                              alt=""
+                            />
+                            <img
+                              (click)="
+                                this.reactionService.addReaction(
+                                  currentUser,
+                                  message,
+                                  'reactionCelebrate'
+                                )
+                              "
+                              src="./assets/icons/emoji _reactionCelebrate_.png"
+                              alt=""
+                            />
+                            <img
+                              (click)="
+                                this.reactionService.addReaction(
+                                  currentUser,
+                                  message,
+                                  'reactionCheck'
+                                )
+                              "
+                              src="./assets/icons/emoji _reactionCheck_.png"
+                              alt=""
+                            />
+                            <img
+                              (click)="
+                                this.reactionService.addReaction(
+                                  currentUser,
+                                  message,
+                                  'reactionRocket'
+                                )
+                              "
+                              src="./assets/icons/emoji _reactionRocket_.png"
+                              alt=""
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      *ngIf="editingMessageId === message.messageId"
+                      class="edit-message-container"
+                    >
+                      <textarea
+                        (keydown)="handleEnterKey($event)"
+                        class="edit-textarea"
+                        [formControl]="editedMessage"
+                      ></textarea>
+                      <emoji-mart
+                        class="chat-emoji-picker"
+                        *ngIf="showEditEmojis"
+                        set="google"
+                        [emojiSize]="24"
+                        (emojiSelect)="onEmojiSelectEdit($event)"
+                      >
+                      </emoji-mart>
+                      <div *ngIf="message.fileName" class="edit-file-container">
+                        <span>{{ message.fileName }}</span>
+
+                        <img
+                          *ngIf="
+                            message.fileType == 'image/jpeg' ||
+                            message.fileType == 'image/png'
+                          "
+                          class="preview-img"
+                          [src]="message.fileDownloadUrl"
+                          alt=""
+                        />
+
+                        <object
+                          *ngIf="message.fileType == 'application/pdf'"
+                          [data]="message.safeFileUrl"
+                          type="application/pdf"
+                          width="60%"
+                          height="100%"
+                        >
+                          Dein Browser unterstützt keine PDF-Anzeige
+                        </object>
+                      </div>
+                      <div
+                        style="position: relative"
+                        *ngIf="message.audioDownloadUrl"
+                      >
+                        <audio controls>
+                          <source
+                            [src]="message.audioDownloadUrl"
+                            type="audio/mpeg"
+                          />
+                          Your browser does not support the audio element.
+                        </audio>
+                      </div>
+                      <div class="bottom-container">
+                        <div>
+                          <img
+                            src="./assets/icons/sentiment_satisfied-1.png"
+                            (click)="toggleEmojisEdit($event)"
+                            alt=""
+                            class="add-emoji-edit"
+                          />
+                        </div>
+                        <div class="button-container">
+                          <button
+                            class="delete-message-button"
+                            (click)="
+                              this.dbService.deleteMessage(
+                                message.chatId,
+                                message.messageId
+                              )
+                            "
+                          >
+                            Löschen
+                          </button>
+                          <button
+                            class="cancel-button"
+                            (click)="cancelEditing()"
+                          >
+                            Abbrechen
+                          </button>
+                          <button
+                            class="save-button"
+                            (click)="setEditedDirectMessage(message)"
+                            [disabled]="editedMessage.invalid"
+                          >
+                            Speichern
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <img
+                      class="avatar"
+                      [ngClass]="
+                        this.sharedService.isMobile ? 'avatar-mobile' : 'avatar'
+                      "
+                      [src]="getAvatarForUser(currentUser.name)"
+                      alt=""
+                    />
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Nachrichteneingabe -->
+  <div class="input-background">
+    <div
+      class="custom-input"
+      [ngClass]="
+        this.sharedService.isMobile ? 'mobile-custom-input' : 'custom-input'
+      "
+    >
+      <textarea
+        (keydown)="handleEnterKey($event)"
+        #customInput
+        contenteditable="true"
+        placeholder="Nachricht an {{ user.name }}"
+        class="text-area"
+        [formControl]="directMessage"
+      ></textarea>
+      <div>
+        <emoji-mart
+          class="chat-emoji-picker"
+          *ngIf="showEmojis"
+          set="google"
+          [emojiSize]="24"
+          (emojiSelect)="onEmojiSelect($event)"
+        >
+        </emoji-mart>
+      </div>
+      <div *ngIf="hasNames" class="name-container" #nameContainerRef>
+        CC:
+        <div *ngFor="let name of selectedNames; let i = index" class="name-tag">
+          <div class="close-name-tag" (click)="removeName(i)">
+            <img src="../../../assets/icons/close-white.svg" alt="" />
+          </div>
+          &#64;{{ name.name }}
+        </div>
+      </div>
+
+      <span style="color: red" *ngIf="this.fileService.fileSize"
+        >Datei ist zu groß! max. 500kB</span
+      >
+      <span style="color: red" *ngIf="this.fileService.fileType"
+        >Erlaubte Dateitypen: jpg, png, pdf!</span
+      >
+
+      @if (this.fileService.selectedFile) {
+      <!-- Datei-Anzeige -->
+      <div class="file-upload-container">
+        <img
+          *ngIf="
+            this.fileService.selectedFileType == 'image/jpeg' ||
+            this.fileService.selectedFileType == 'image/png'
+          "
+          style="height: 60px; width: 40%; object-fit: contain"
+          [src]="this.fileService.fileDownloadUrl"
+          alt=""
+        />
+
+        <iframe
+          *ngIf="
+            this.fileService.selectedFileType == 'application/pdf' &&
+            this.fileService.safeFileUrl
+          "
+          [src]="this.fileService.safeFileUrl"
+          type="application/pdf"
+          width="40%"
+          height="60px"
+        >
+          Dein Browser unterstützt keine PDF-Anzeige
+        </iframe>
+
+        <span> {{ this.fileService.selectedFileName }}</span>
+        <label for="file-change" style="height: 24px">
+          <img
+            class="file-button-change"
+            src="./assets/icons/edit.png"
+            alt="Anhang ändern"
+          />
+        </label>
+
+        <input
+          style="display: none"
+          id="file-change"
+          type="file"
+          (change)="
+            this.fileService.onChangeFileSelected(
+              $event,
+              this.fileService.selectedFileName
+            )
+          "
+        />
+
+        <img
+          class="file-button-delete"
+          (click)="
+            this.fileService.deleteFile(this.fileService.selectedFileName);
+            this.fileService.selectedFile = null
+          "
+          src="./assets/icons/close.png"
+          alt="Anhang löschen"
+        />
+      </div>
+      } @if(this.audioService.audioDownloadUrl){
+      <!-- Audio-Player anzeigen, falls eine Audiodatei vorhanden ist -->
+      <div style="position: relative">
+        <audio controls>
+          <source
+            [src]="this.audioService.audioDownloadUrl"
+            type="audio/mpeg"
+          />
+          Your browser does not support the audio element.
+        </audio>
+        <img
+          class="audio-button-delete"
+          (click)="
+            this.audioService.deleteAudio(this.audioService.audioDownloadUrl);
+            this.audioService.audioDownloadUrl = ''
+          "
+          src="./assets/icons/close.png"
+          alt="Anhang löschen"
+        />
+      </div>
+      }
+
+      <div class="add-reaction">
+        <div class="reactions">
+          <div class="upload-area">
+            <!-- Datei-Upload -->
+            <label for="file-upload">
+              <img src="./assets/icons/add-1.png" alt="" class="add-icon" />
+            </label>
+
+            <input
+              style="display: none"
+              id="file-upload"
+              type="file"
+              (change)="this.fileService.onFileSelectedChat($event)"
+            />
+          </div>
+
+          <div class="audio-container">
+            <div
+              (mousedown)="this.audioService.startRecording($event)"
+              (mouseup)="this.audioService.stopRecording($event)"
+              (touchstart)="this.audioService.startRecording($event)"
+              (touchend)="this.audioService.stopRecording($event)"
+              class="audio-button"
+            >
+              <img
+                [ngClass]="
+                  this.audioService.recordingAudio ? 'scale' : 'add-audio'
+                "
+                class="add-audio"
+                [src]="
+                  this.audioService.recordingAudio
+                    ? './assets/icons/microphone_recording.png'
+                    : './assets/icons/microphone.png'
+                "
+                alt=""
+              />
+            </div>
+            <div
+              *ngIf="this.audioService.recordingAudio"
+              class="record-container"
+            >
+              <span
+                [ngClass]="
+                  this.sharedService.isMobile ? 'letters-mobile' : 'letters'
+                "
+                class="letters"
+                >Halte zum Aufnehmen {{ this.audioService.displayTime }}</span
+              >
+            </div>
+          </div>
+
+          <div
+            style="
+              height: 50px;
+              width: 1px;
+              background-color: rgba(104, 104, 104, 1);
+            "
+          ></div>
+          <img
+            *ngIf="!this.sharedService.isMobile"
+            src="./assets/icons/sentiment_satisfied-1.png"
+            (click)="toggleEmojis($event)"
+            alt=""
+            class="add-emoji"
+          />
+          <img
+            src="./assets/icons/alternate_email-1.png"
+            (click)="toggleUserList()"
+            alt=""
+            class="add-mail"
+          />
+        </div>
+        @if (showUsers) {
+        <div class="users-dialog">
+          @for (user of userList; track user.name) {
+          <div class="user-item" (click)="insertName(user.name)">
+            <img
+              class="further-user-avatar"
+              [src]="userService.getAvatarForUser(user.name)"
+              alt="{{ user.name }}"
+            />
+            <span class="user-name">{{ user.name }}</span>
+          </div>
+          }
+        </div>
+        }
+
+        <button
+          (click)="
+            sendDirectMessage();
+            this.fileService.selectedFile = null;
+            this.fileService.selectedFileName = '';
+            this.fileService.fileDownloadUrl = '';
+            this.audioService.audioDownloadUrl = ''
+          "
+          [disabled]="
+            directMessage.invalid &&
+            !this.fileService.selectedFile &&
+            !this.audioService.audioDownloadUrl
+          "
+        >
+          <img src="./assets/icons/Send icon.png" />
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

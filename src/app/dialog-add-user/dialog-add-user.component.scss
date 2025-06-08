@@ -1,0 +1,242 @@
+.adduser-container {
+    position: fixed;
+    top: 50%;
+    transform: translate(50%, -50%);
+    right: 50%;
+    border-radius: 30px 0 30px 30px;
+    width: 710px;
+    height: 279px;
+    background-color: white;
+    margin: 0;
+    padding: 40px;
+    box-shadow: 0px 6px 10px 0px #00000033;
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.addUser-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    img {
+        width: 40px;
+        height: 40px;
+        padding: 8px;
+        border-radius: 30px;
+        &:hover {
+            cursor: pointer;
+            background: rgba(236, 238, 254, 1);
+
+        }
+    }
+    p {
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0;
+    }
+}
+
+.usersList {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    img {
+        width: 40px;
+        height: 40px;
+        border-radius: 30px;
+    }
+}
+
+.createBtn {
+    width: 204px;
+    height: 49px;
+    border-radius: 25px;
+    background-color: rgba(68, 77, 242, 1);
+    color: rgba(255, 255, 255, 1);
+    font-size: 18px;
+    font-weight: 700;
+    align-self: flex-end;
+    border: unset;
+    bottom: 20px;
+
+    &:hover {
+        background-color: rgba(68, 77, 242, 0.7);
+        cursor: pointer;
+    }
+}
+
+.createBtn[disabled] {
+    background-color: #cccccc;
+    color: #ffffff;
+    cursor: not-allowed;
+}
+
+
+.custom-dropdown {
+    width: auto;
+    height: 55px;
+    border-radius: 30px;
+    border: 1px solid rgba(173, 176, 217, 1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    scrollbar-width: none;
+}
+
+.dropdown-selected {
+    flex-grow: 1;
+    cursor: pointer;
+    padding: 20px;
+    font-weight: 400;
+    font-size: 14px;
+}
+
+.dropdown-options {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    position: absolute;
+    background: rgba(255, 255, 255, 1);
+    border-radius: 0px 0px 20px 20px;
+    border: 1px solid rgba(173, 176, 217, 1);
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.08);
+    max-height: 171px;
+    overflow-y: auto;
+    z-index: 100;
+    font-weight: 400;
+    font-size: 14px;
+    width: auto;
+    max-height: 171px;
+    height: auto;
+    bottom:-65px;
+    padding: 20px 21px;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+
+.dropdown-options li {
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-options li:hover {
+    background-color: rgba(173, 176, 217, 0.1);
+}
+
+.addUser-content {
+    padding: 40px;
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 50%;
+    transform: translate(50%, -50%);
+    right: 50%;
+    width: 514px;
+    height: 294px;
+    border-radius: 30px 0 30px 30px;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0px 6px 10px 0px rgba(0, 0, 0, 0.2);
+}
+
+.addUser-content-mobile {
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    top: unset;
+    border-radius: 30px 30px 0 0;
+    transform: translate(0, 0);
+    padding: 0;
+    height: auto;
+    gap: 8px;
+}
+
+.selected-user {
+    background: rgba(236, 238, 254, 1);
+    width: max-content;
+    height: 40px;
+    border-radius: 30px;
+    padding: 3px 20px;
+    display: flex;
+    align-items: center;
+    // position: absolute;
+    margin: 0 6px;
+}
+
+.selected-users {
+    display: flex;
+}
+
+
+.slectedUserImg {
+    width: 40px;
+    height: 40px;
+    border-radius: 30px;
+    margin-right: 8px;
+}
+
+.closeBtn {
+    cursor: pointer;
+
+    &:hover {
+        content: url('./../../assets/icons/close-1.png');
+    }
+}
+
+.flex-direction {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.channel-name {
+    color: rgba(121, 126, 243, 1);
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.close-line {
+    width: 62px;
+    height: 6px;
+    border-radius: 23px;
+    background-color: #d9d9d9;
+    margin: 20px;
+    cursor: pointer;
+    align-self: center;
+
+}
+
+.d-none {
+    display: none;
+}
+
+.m-20 {
+    margin: 20px;
+}
+
+@media (max-width:768px) {
+    .addUser-content {
+        width: 100%;
+        max-width: unset;
+    }
+
+    .addUser-header p {
+        font-size: 18px;
+    }
+
+    .addUser-header img {
+        width: 25px;
+        height: 25px;
+    }
+
+    .dropdown-options {
+        position: fixed;
+        bottom: 0;
+    }
+}

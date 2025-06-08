@@ -1,0 +1,140 @@
+.channel-users {
+    position: fixed;
+    top: 50%;
+    right: 20%;
+    transform: translateY(-50%);
+    border-radius: 30px 0 30px 30px;
+    width: 80%;
+    max-width: 415px;
+    height: auto;
+    background-color: white;
+    margin: 0;
+    padding: 20px;
+    box-shadow: 0px 6px 10px 0px #00000033;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.members-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 700;
+    font-size: 24px;
+
+    img {
+        border-radius: 30px;
+        width: 40px;
+        height: 40px;
+
+        &:hover {
+            background: rgba(236, 238, 254, 1);
+            content: url('./../../../../assets/icons/close-1.png');
+            cursor: pointer;
+        }
+    }
+}
+
+.usersList {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 18px;
+    font-weight: 400;
+    padding: 10px;
+    width: auto;
+
+    &:hover {
+        background: rgba(236, 238, 254, 1);
+        border-radius: 30px;
+        color: rgba(83, 90, 241, 1);
+        cursor: pointer;
+    }
+}
+
+.users-menu {
+    gap: 16px;
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    height: 271px;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    padding-inline-start: 0;
+}
+
+.add-users {
+    padding-left: 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 14px;
+    font-weight: 400;
+    width: auto;
+
+    img {
+        background: rgba(236, 238, 254, 1);
+        width: 32px;
+        height: 32px;
+        padding: 10px;
+        gap: 10px;
+        border-radius:30px;
+
+        &:hover {
+            content: url('./../../../../assets/icons/person_add_hover.png')
+        }
+    }
+
+    &:hover {
+        background: rgba(236, 238, 254, 1);
+        border-radius: 30px;
+        color: rgba(83, 90, 241, 1);
+        cursor: pointer;
+    }
+}
+
+.online-point {
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    top: 40px;
+    left: 50px;
+    border: 2px solid #FFFFFF;
+    background-color: #92C83E;
+    z-index: 11;
+    position: absolute;
+}
+
+.offline-point {
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    top: 40px;
+    left: 50px;
+    border: 2px solid #FFFFFF;
+    background-color: rgba(104, 104, 104, 1);
+    z-index: 11;
+    position: absolute;
+}
+
+@media (max-width:768px) {
+    .channel-users {
+        right: 50%;
+        transform: translate(50%, -50%);
+    }
+
+    .members-header {
+        font-size: 18px;
+    }
+
+    .members-header img {
+        width: 25px;
+        height: 25px;
+    }
+
+    ul {
+        padding-inline-start: 20px;
+    }
+}

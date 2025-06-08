@@ -1,0 +1,51 @@
+<div class="login-content">
+    <div class="header">
+        <img (click)="getBack()" src="./assets/icons/arrow_back.png" alt="">
+        <h1>Wähle deinen Avatar</h1>
+    </div>
+    <img class="selected-avatar" [src]="selectedAvatar" alt="Selected Avatar">
+    <h2>{{user.name}}</h2>
+    <div class="text-right">
+        <p>Aus der Liste wählen</p>
+    </div>
+    <div class="avatars">
+        @for (avatar of avatars; track avatar) {
+            <img [src]="avatar" (click)="selectAvatar(avatar)" alt="Avatar">
+        }
+    </div>
+    <div class="upload-area">
+        <label for="file-upload" class="custom-file-upload">
+            eigenes Bild auswählen
+          </label>
+          
+        <input id="file-upload" type="file" (change)="onFileSelected($event)" />  
+        @if (selectedFile) {
+            <button class="next-button" [ngStyle]="{'background-color': '#444df2'}" (click)="uploadFile()" [disabled]="!selectedFile">Datei hochladen</button>
+        }
+    </div>
+    <div class="file-name" [ngClass]="{'file-name-visible': selectedFileName}" 
+        [ngStyle]="{'margin-top': selectedFileName ? '10px' : '0px'}">
+        <p *ngIf="selectedFileName">>  {{ selectedFileName }}</p>
+    </div>
+
+    <form #ngForm="ngForm" (ngSubmit)="onSubmit(contactForm)" #contactForm="ngForm">
+
+        <div class="submit-area">
+
+            <div class="login-buttons">
+                <button  class="next-button" 
+                [disabled]="!buttonEnabled" 
+                [ngClass]="{'active-button': buttonEnabled}">Weiter</button>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+@if (success) {
+    <div class="success-dialog">
+        <div class="success-inner-dialog">
+            <p>Konto erfolgreich erstellt!</p>
+        </div>
+    </div>
+}

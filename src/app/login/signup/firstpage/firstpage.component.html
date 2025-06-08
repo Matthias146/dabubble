@@ -1,0 +1,71 @@
+<div class="login-content">
+    <div class="header">
+        <img (click)="getBack()" src="./assets/icons/arrow_back.png" alt="">
+        <h1>Konto erstellen</h1>
+    </div>
+    
+    <p>Mit deinem Namen und deiner E-Mail-Adresse hast du dein neues DABubble-Konto.</p>
+
+    <form #ngForm="ngForm" (ngSubmit)="onSubmit(contactForm)" #contactForm="ngForm">
+        
+        <div class="input">
+            <img [ngStyle]="{'width': '16px'}" src="./assets/icons/login-name.svg" alt="">
+            <input 
+                name="nameInput" 
+                [(ngModel)]="user.name" 
+                (blur)="validateName()"
+                #nameInput 
+                required 
+                placeholder="Name und Nachname" 
+                [placeholder]="validName ? 'Name und Nachname' : 'Bitte geben Sie Ihren Vor- und Nachnamen ein.'"
+                [ngClass]="{'invalid': !validName}"
+                />
+        </div>
+
+        <div class="input">
+            <img [ngStyle]="{'width': '20px'}" src="./assets/icons/login-mail.svg" alt="">
+            <input 
+                name="mailInput"
+                [(ngModel)]="user.mail"  
+                (blur)="validateMail()"
+                #mailInput 
+                required 
+                placeholder="beispielname@email.com" 
+                [placeholder]="validMail ? 'beispielname@email.com' : 'Bitte geben Sie eine korrekte Mailadresse ein.'"
+                pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
+                [ngClass]="{'invalid': !validMail}"
+                />
+        </div>
+
+        <div class="input">
+            <img [ngStyle]="{'width': '16px'}" src="./assets/icons/login-lock.svg" alt="">
+            <input 
+            name="passwordInput"
+            [(ngModel)]="user.password"
+            required 
+            placeholder="Passwort (min. 6 Zeichen)" 
+            type="password" 
+            (blur)="activateButton()"
+            (input)="activateButton()"
+            />
+        </div>
+
+        <div class="check-area">
+            <div class="checkbox" (click)="togglePrivacy()">
+                <img [src]="checked ? './assets/icons/login-checkbox-checked.svg' : './assets/icons/login-checkbox-blank.svg'" alt="Checkbox">
+            </div>
+            <p> Ich stimme der <a target="_blank">Datenschutzerklärung</a> zu.</p>
+        </div>
+
+        <div class="submit-area">
+
+            <div class="login-buttons">
+                <button  class="next-button" 
+                [disabled]="!buttonEnabled" 
+                [ngClass]="{'active-button': buttonEnabled}">Weiter</button>
+            </div>
+        </div>
+
+
+    </form>
+</div>
